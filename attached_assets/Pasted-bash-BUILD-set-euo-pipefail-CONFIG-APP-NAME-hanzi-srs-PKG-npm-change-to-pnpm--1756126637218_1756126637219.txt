@@ -1,0 +1,571 @@
+bash <<'BUILD'
+set -euo pipefail
+
+# === CONFIG ===
+APP_NAME="hanzi-srs"
+PKG="npm"  # change to pnpm/yarn if you prefer (ensure it's installed)
+NODE_MAJOR="$(node -v | sed 's/v\([0-9]*\).*/\1/')"
+if [ "${NODE_MAJOR:-0}" -lt 18 ]; then
+  echo "❌ Node.js 18+ required. Current: $(node -v)"; exit 1
+fi
+
+# === 1) Scaffold a modern, Stripe-like Next.js app (TypeScript + Tailwind + App Router) ===
+npx --yes create-next-app@latest "$APP_NAME" \
+  --ts --tailwind --eslint --app --src-dir --import-alias "@/*"
+
+cd "$APP_NAME"
+
+# === 2) Install additional deps for premium UI/UX, theming, and interactions ===
+$PKG i framer-motion lucide-react class-variance-authority tailwind-merge next-themes clsx
+$PKG i -D @tailwindcss/typography @tailwindcss/forms @tailwindcss/aspect-ratio prettier prettier-plugin-tailwindcss eslint-plugin-tailwindcss
+
+# === 3) Tailwind theme tuned for premium feel (inspired by Stripe’s clarity & polish) ===
+cat > tailwind.config.ts <<'EOF'
+import type { Config } from "tailwindcss"
+
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./src/app/**/*.{ts,tsx,mdx}",
+    "./src/components/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx,mdx}"
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: { "2xl": "1280px" }
+    },
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))"
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))"
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))"
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))"
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))"
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))"
+        },
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))"
+        }
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)"
+      },
+      backdropBlur: { xs: "2px" },
+      boxShadow: {
+        soft: "0 10px 30px -12px rgba(0,0,0,.15)",
+      },
+      keyframes: {
+        "fade-in": { "0%": { opacity: "0", transform: "translateY(4px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        "shine": { "0%": { backgroundPosition: "200% 0" }, "100%": { backgroundPosition: "-200% 0" } },
+        "pulse-soft": { "0%,100%": { opacity: ".95" }, "50%": { opacity: ".65" } }
+      },
+      animation: {
+        "fade-in": "fade-in 300ms ease-out both",
+        "shine": "shine 2.4s linear infinite",
+        "pulse-soft": "pulse-soft 2.4s ease-in-out infinite"
+      }
+    }
+  },
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/aspect-ratio")
+  ]
+}
+export default config
+EOF
+
+# === 4) Global styles: design tokens, gradient canvases, premium surface treatments ===
+cat > src/app/globals.css <<'EOF'
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- CSS Variables (light/dark) ---- */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+
+  --muted: 220 17% 97%;
+  --muted-foreground: 220 13% 28%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  /* Premium Indigo primary, Jade accent (Stripe-like calm confidence) */
+  --primary: 246 100% 60%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+
+  --accent: 160 84% 39%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 246 100% 60%;
+  --success: 160 84% 39%;
+  --warning: 35 92% 54%;
+
+  --radius: 14px;
+}
+
+.dark {
+  --background: 222 47% 7%;
+  --foreground: 210 40% 98%;
+
+  --muted: 217 33% 12%;
+  --muted-foreground: 215 20% 65%;
+
+  --popover: 222 47% 7%;
+  --popover-foreground: 210 40% 98%;
+
+  --card: 222 47% 8%;
+  --card-foreground: 210 40% 98%;
+
+  --primary: 248 93% 67%;
+  --primary-foreground: 222 47% 11%;
+
+  --secondary: 217 33% 12%;
+  --secondary-foreground: 210 40% 98%;
+
+  --accent: 160 84% 45%;
+  --accent-foreground: 222 47% 11%;
+
+  --destructive: 0 88% 66%;
+  --destructive-foreground: 222 47% 11%;
+
+  --border: 217 33% 18%;
+  --input: 217 33% 18%;
+  --ring: 248 93% 67%;
+}
+
+/* Base resets & font stacks */
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "liga" 1, "calt" 1;
+  }
+}
+
+/* Reusable surface with subtle glassy effect for premium feel */
+.surface {
+  @apply bg-white/70 dark:bg-white/5 backdrop-blur-md border rounded-xl shadow-soft;
+}
+
+/* Gradient canvases (Stripe-inspired, gentle) */
+.bg-grid {
+  background-image:
+    radial-gradient(50% 50% at 50% 50%, hsl(var(--primary)/.08), transparent 70%),
+    linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
+}
+.gradient-hero {
+  background: radial-gradient(1200px 600px at 10% 10%, hsl(var(--primary)/.15), transparent 60%),
+              radial-gradient(1200px 600px at 90% 0%, hsl(var(--accent)/.12), transparent 70%),
+              linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
+}
+
+a.focus-ring, button.focus-ring {
+  @apply outline-none ring-2 ring-offset-2 ring-ring ring-offset-background rounded-md;
+}
+EOF
+
+# === 5) Utilities & basic UI primitives (button, container) ===
+mkdir -p src/lib src/components/ui src/components/site src/components/providers public/og
+cat > src/lib/utils.ts <<'EOF'
+import { type ClassValue } from "clsx"
+import clsx from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }
+EOF
+
+cat > src/components/ui/button.tsx <<'EOF'
+"use client"
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60 disabled:pointer-events-none ring-offset-background",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:opacity-90",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-muted",
+        outline: "border bg-transparent hover:bg-muted",
+        subtle: "bg-muted text-foreground hover:bg-muted/80",
+      },
+      size: { sm: "h-9 px-3", md: "h-11 px-4", lg: "h-12 px-6" }
+    },
+    defaultVariants: { variant: "default", size: "md" }
+  }
+)
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, ...props }, ref) => (
+    <button ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />
+  )
+)
+Button.displayName = "Button"
+EOF
+
+cat > src/components/ui/container.tsx <<'EOF'
+import * as React from "react"
+import { cn } from "@/lib/utils"
+export function Container({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("container mx-auto px-4", className)} {...props} />
+}
+EOF
+
+# === 6) Theme provider (dark/light, system) ===
+cat > src/components/providers/theme-provider.tsx <<'EOF'
+"use client"
+import * as React from "react"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      {children}
+    </NextThemesProvider>
+  )
+}
+EOF
+
+# === 7) Site chrome: Header, Footer, Hero, Feature grid, Pricing, FAQ ===
+cat > src/components/site/header.tsx <<'EOF'
+"use client"
+import Link from "next/link"
+import { useState } from "react"
+import { Container } from "@/components/ui/container"
+import { Button } from "@/components/ui/button"
+import { Menu, X } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+export function Header() {
+  const [open, setOpen] = useState(false)
+  return (
+    <header className="sticky top-0 z-50">
+      <div className="backdrop-blur-xl bg-white/60 dark:bg-black/30 border-b">
+        <Container className="flex h-16 items-center justify-between">
+          <Link href="/" className="font-semibold text-lg tracking-tight">Hanzi SRS</Link>
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            <Link href="#features" className="hover:opacity-80">Features</Link>
+            <Link href="#pricing" className="hover:opacity-80">Pricing</Link>
+            <Link href="#faq" className="hover:opacity-80">FAQ</Link>
+            <Link href="/app" className="hover:opacity-80">Sign in</Link>
+            <Button className="ml-2">Start free</Button>
+          </nav>
+          <button className="md:hidden p-2 rounded-md hover:bg-muted" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+            {open ? <X className="h-5 w-5"/> : <Menu className="h-5 w-5"/>}
+          </button>
+        </Container>
+        <div className={cn("md:hidden border-t", open ? "block" : "hidden")}>
+          <Container className="py-3 flex flex-col gap-3">
+            <Link href="#features" onClick={() => setOpen(false)}>Features</Link>
+            <Link href="#pricing" onClick={() => setOpen(false)}>Pricing</Link>
+            <Link href="#faq" onClick={() => setOpen(false)}>FAQ</Link>
+            <Link href="/app" onClick={() => setOpen(false)}>Sign in</Link>
+            <Button onClick={() => setOpen(false)}>Start free</Button>
+          </Container>
+        </div>
+      </div>
+    </header>
+  )
+}
+EOF
+
+cat > src/components/site/footer.tsx <<'EOF'
+import { Container } from "@/components/ui/container"
+
+export function Footer() {
+  return (
+    <footer className="border-t py-10">
+      <Container className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+        <p>© {new Date().getFullYear()} Hanzi SRS. All rights reserved.</p>
+        <nav className="flex gap-6">
+          <a href="#" className="hover:opacity-80">Privacy</a>
+          <a href="#" className="hover:opacity-80">Terms</a>
+          <a href="#" className="hover:opacity-80">Contact</a>
+        </nav>
+      </Container>
+    </footer>
+  )
+}
+EOF
+
+cat > src/components/site/hero.tsx <<'EOF'
+import { Button } from "@/components/ui/button"
+import { Container } from "@/components/ui/container"
+
+export function Hero() {
+  return (
+    <section className="relative overflow-hidden gradient-hero pb-16 pt-24 md:pt-32">
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid" />
+      <Container className="relative">
+        <div className="max-w-2xl">
+          <h1 className="text-4xl md:text-6xl font-semibold tracking-tight leading-tight">
+            Learn <span className="text-primary">Hanzi</span> faster with<br className="hidden md:block"/> vivid mnemonics & premium SRS.
+          </h1>
+          <p className="mt-5 text-lg text-muted-foreground">
+            A focused, Stripe‑level polished experience for mastering 2,000+ characters — with integrated context and audio.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <Button className="h-12 px-7">Start free</Button>
+            <Button variant="outline" className="h-12 px-7">See how it works</Button>
+          </div>
+        </div>
+        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-90">
+          {Array.from({length:8}).map((_,i)=>(
+            <div key={i} className="surface p-6 animate-fade-in" style={{animationDelay:`${i*60}ms`}}>
+              <div className="text-3xl">字</div>
+              <div className="mt-2 text-sm text-muted-foreground">Premium card surface</div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )
+}
+EOF
+
+cat > src/components/site/feature-grid.tsx <<'EOF'
+import { Container } from "@/components/ui/container"
+import { CheckCircle, Zap, Keyboard, Waves } from "lucide-react"
+
+const FEATS = [
+  { icon: Zap, title: "Vivid mnemonics", desc: "Short, funny stories encode meaning + reading + tone." },
+  { icon: Keyboard, title: "Keyboard-fast reviews", desc: "Optimized for flow with smart hints & wrap-up." },
+  { icon: Waves, title: "Context & audio", desc: "Use words in sentences; hear native audio." },
+  { icon: CheckCircle, title: "Transparent SRS", desc: "Know what’s due and why; pace that fits life." }
+]
+
+export function FeatureGrid() {
+  return (
+    <section id="features" className="py-20">
+      <Container>
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">What makes it premium</h2>
+        <p className="mt-3 text-muted-foreground max-w-2xl">
+          Clean design, humane pacing, and delightful details keep you coming back — and finishing.
+        </p>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {FEATS.map(({icon:Icon,title,desc})=>(
+            <div key={title} className="surface p-6">
+              <Icon className="h-6 w-6 text-primary" />
+              <h3 className="mt-4 font-medium">{title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )
+}
+EOF
+
+cat > src/components/site/pricing.tsx <<'EOF'
+import { Container } from "@/components/ui/container"
+import { Button } from "@/components/ui/button"
+
+export function Pricing() {
+  return (
+    <section id="pricing" className="py-20 border-t">
+      <Container>
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Simple pricing</h2>
+        <p className="mt-3 text-muted-foreground max-w-2xl">
+          Start free (Levels 1–3). Upgrade when you’re ready to go all‑in.
+        </p>
+        <div className="mt-10 grid md:grid-cols-3 gap-6">
+          <div className="surface p-6">
+            <h3 className="text-lg font-medium">Free</h3>
+            <p className="mt-1 text-sm text-muted-foreground">First ~100 characters & core features.</p>
+            <p className="mt-6 text-3xl font-semibold">$0</p>
+            <Button className="mt-6 w-full">Start</Button>
+          </div>
+          <div className="surface p-6 ring-1 ring-primary/30">
+            <h3 className="text-lg font-medium">Monthly</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Full access. Cancel anytime.</p>
+            <p className="mt-6 text-3xl font-semibold">$10<span className="text-base text-muted-foreground">/mo</span></p>
+            <Button className="mt-6 w-full">Subscribe</Button>
+          </div>
+          <div className="surface p-6">
+            <h3 className="text-lg font-medium">Yearly</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Best value.</p>
+            <p className="mt-6 text-3xl font-semibold">$95<span className="text-base text-muted-foreground">/yr</span></p>
+            <Button className="mt-6 w-full">Go yearly</Button>
+          </div>
+        </div>
+      </Container>
+    </section>
+  )
+}
+EOF
+
+cat > src/components/site/faq.tsx <<'EOF'
+import { Container } from "@/components/ui/container"
+
+const QA = [
+  {q:"Is there a free trial?", a:"Yes. Levels 1–3 are free with full features. Your reviews persist forever."},
+  {q:"Do you have a mobile app?", a:"We’re mobile-perfect on the web and support PWA install; native apps are on our roadmap."},
+  {q:"Simplified or Traditional?", a:"Simplified at launch. Traditional track planned next."},
+  {q:"Can I cancel anytime?", a:"Yes. Manage your plan in the account portal; refunds per policy."}
+]
+
+export function FAQ() {
+  return (
+    <section id="faq" className="py-20 border-t">
+      <Container>
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">FAQs</h2>
+        <div className="mt-8 grid md:grid-cols-2 gap-6">
+          {QA.map(({q,a})=>(
+            <div key={q} className="surface p-6">
+              <h3 className="font-medium">{q}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{a}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )
+}
+EOF
+
+# === 8) Layout & homepage using the components ===
+cat > src/app/layout.tsx <<'EOF'
+import type { Metadata } from "next"
+import "./globals.css"
+import { ThemeProvider } from "@/components/providers/theme-provider"
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://example.com"),
+  title: { default: "Hanzi SRS — Learn Chinese Characters Faster", template: "%s · Hanzi SRS" },
+  description: "A premium, mnemonic-powered SRS for mastering 2,000+ Chinese characters with context & audio.",
+  icons: { icon: "/favicon.svg" },
+  openGraph: { title: "Hanzi SRS", description: "Learn Hanzi faster with vivid mnemonics and Stripe‑level polish.", type: "website" },
+  twitter: { card: "summary_large_image", title: "Hanzi SRS", description: "Mnemonic-powered Chinese character mastery." }
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
+    </html>
+  )
+}
+EOF
+
+cat > src/app/page.tsx <<'EOF'
+import { Header } from "@/components/site/header"
+import { Hero } from "@/components/site/hero"
+import { FeatureGrid } from "@/components/site/feature-grid"
+import { Pricing } from "@/components/site/pricing"
+import { FAQ } from "@/components/site/faq"
+import { Footer } from "@/components/site/footer"
+
+export default function Page() {
+  return (
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <FeatureGrid />
+        <Pricing />
+        <FAQ />
+      </main>
+      <Footer />
+    </>
+  )
+}
+EOF
+
+# === 9) Prettier + ESLint Tailwind plugin for tidy, consistent code ===
+cat > .prettierrc <<'EOF'
+{
+  "singleQuote": false,
+  "semi": false,
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
+EOF
+
+# Optional ESLint Tailwind plugin wiring (create-next-app already configures ESLint)
+node - <<'EOF'
+const fs = require('fs')
+const path = '.eslintrc.json'
+if (fs.existsSync(path)) {
+  const cfg = JSON.parse(fs.readFileSync(path,'utf8'))
+  cfg.plugins = Array.from(new Set([...(cfg.plugins||[]), "tailwindcss"]))
+  cfg.extends = Array.from(new Set([...(cfg.extends||[]), "plugin:tailwindcss/recommended"]))
+  fs.writeFileSync(path, JSON.stringify(cfg,null,2))
+}
+EOF
+
+# === 10) Basic favicon (vector) ===
+cat > public/favicon.svg <<'EOF'
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#635bff"/><stop offset="1" stop-color="#00c2a8"/></linearGradient></defs>
+  <rect width="64" height="64" rx="12" fill="url(#g)"/>
+  <text x="50%" y="54%" text-anchor="middle" font-size="34" font-family="system-ui, -apple-system, Segoe UI" fill="#fff">字</text>
+</svg>
+EOF
+
+# === 11) Package scripts polish ===
+node - <<'EOF'
+const fs = require('fs')
+const pkg = JSON.parse(fs.readFileSync('package.json','utf8'))
+pkg.scripts = {
+  ...pkg.scripts,
+  "format": "prettier --write .",
+  "lint:strict": "eslint . --ext .ts,.tsx --max-warnings=0",
+  "analyze:css": "tailwindcss -i ./src/app/globals.css -o /dev/null --minify"
+}
+fs.writeFileSync('package.json', JSON.stringify(pkg,null,2))
+EOF
+
+echo "✅ Build ready. Run the app:"
+echo "   cd $APP_NAME && $PKG run dev"
+BUILD
