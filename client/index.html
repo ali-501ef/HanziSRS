@@ -177,7 +177,7 @@
     .meter{height:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; overflow:hidden}
     .meter > span{display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent-2))}
 
-    /* Settings sheet (reworked) */
+    /* Settings sheet */
     .sheet{position:fixed; top:0; right:0; width:min(520px, 100vw); height:100%; background:color-mix(in oklab, var(--bg), transparent 12%); backdrop-filter: blur(10px); border-left:1px solid var(--border); box-shadow:var(--shadow); transform:translateX(100%); transition: transform .25s ease; z-index:80; padding:16px}
     .sheet.open{transform:none}
     .section{display:grid; gap:10px; margin-top:12px}
@@ -203,7 +203,6 @@
       </a>
 
       <div class="row">
-        <!-- Proper toggles: closed by default; animated menus -->
         <div class="menu-wrap">
           <button id="btnHanziMenu" class="nav-toggle" aria-expanded="false" aria-controls="menuHanzi">
             Hanzi <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -241,7 +240,7 @@
           Theme
         </button>
         <button id="openSettings" class="btn" title="Settings" aria-label="Open settings">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm8 4a7.96 7.96 0 0 0-.34-2.29l2.11-1.54-2-3.46-2.46 1a8.03 8.03 0 0 0-3.95-2.3l-.37-2.6h-4l-.37 2.6a8.03 8.03 0 0 0-3.95 2.3l-2.46-1-2 3.46 2.11 1.54A8.1 8.1 0 0 0 4 12c0 .8.12 1.58.34 2.29l-2.11 1.54 2 3.46 2.46-1a8.03 8.03 0 0 0 3.95 2.3l.37 2.6h4l.37-2.6a8.03 8.03 0 0 0 3.95-2.3l2.46 1 2-3.46-2.11-1.54c.22-.71.34-1.49.34-2.29Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm8 4a7.96 7.96 0 0 0-.34-2.29l2.11-1.54-2-3.46-2.46 1a8.03 8.03 0 0 0-3.95-2.3l-.37-2.6h-4l-.37-2.6a8.03 8.03 0 0 0-3.95 2.3l-2.46-1-2 3.46 2.11 1.54A8.1 8.1 0 0 0 4 12c0 .8.12 1.58.34 2.29l-2.11 1.54 2 3.46 2.46-1a8.03 8.03 0 0 0 3.95 2.3l.37 2.6h4l.37-2.6a8.03 8.03 0 0 0 3.95-2.3l2.46 1 2-3.46-2.11-1.54c.22-.71.34-1.49.34-2.29Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
           Settings
         </button>
       </div>
@@ -258,8 +257,10 @@
           <span class="pill">Local time: <strong id="localTime">—:—</strong></span>
         </div>
       </div>
+
+      <!-- ACTION CARDS (wired to reviews.html & lessons.html) -->
       <div class="actions" style="margin-top:14px">
-        <a href="reviews.html" class="action-card action-rev" aria-label="Start reviews">
+        <a id="cardReviews" href="reviews.html" class="action-card action-rev" aria-label="Start reviews" data-href="reviews.html">
           <div class="stack">
             <span class="label">Reviews</span>
             <span class="sub">Due now</span>
@@ -272,7 +273,7 @@
           <div class="pulse" aria-hidden="true"></div>
         </a>
 
-        <a href="lessons.html" class="action-card action-les" aria-label="Start lessons">
+        <a id="cardLessons" href="lessons.html" class="action-card action-les" aria-label="Start lessons" data-href="lessons.html">
           <div class="stack">
             <span class="label">New lessons</span>
             <span class="sub">Available</span>
@@ -316,14 +317,14 @@
         <div class="card">
           <h2>Quick links</h2>
           <div class="row" style="margin-top:8px">
-            <a class="btn" href="reviews.html">Start reviews</a>
-            <a class="btn" href="lessons.html">Start lessons</a>
+            <a class="btn" href="reviews.html" data-href="reviews.html" id="qlReviews">Start reviews</a>
+            <a class="btn" href="lessons.html" data-href="lessons.html" id="qlLessons">Start lessons</a>
             <a class="btn" href="#" id="btnManage">Manage decks</a>
             <a class="btn" href="#" id="btnSettings">Settings</a>
           </div>
         </div>
 
-        <!-- Items (search removed; area toggle remains) -->
+        <!-- Items -->
         <div class="card">
           <div class="level-toolbar">
             <div class="row"><strong id="levelTitle">Current level</strong><span class="muted" id="lvlLabel"> · Hanzi · Level 3</span></div>
@@ -367,7 +368,7 @@
           <p class="muted" style="margin-top:6px">Reviews completed over the last 14 days.</p>
         </div>
 
-        <!-- Upcoming (all collapsed initially) -->
+        <!-- Upcoming -->
         <div class="card">
           <div class="row" style="justify-content:space-between">
             <h2>Upcoming</h2>
@@ -450,6 +451,14 @@
 
   <script>
     /* ---------------------------
+       Navigation targets (edit here if paths change)
+    ----------------------------*/
+    const PATH = {
+      reviews: 'reviews.html',
+      lessons: 'lessons.html'
+    };
+
+    /* ---------------------------
        Demo data (replace with API)
     ----------------------------*/
     const profile = {
@@ -463,7 +472,6 @@
       starred: [{char:'谢', pin:'xiè', mean:'thank'}, {char:'语', pin:'yǔ', mean:'language'}, {char:'爱', pin:'ài', mean:'love'}],
       heat: Array.from({length:14}, ()=> Math.floor(Math.random()*30)+1)
     };
-    // Items
     const dataHanzi = [
       {label:'汉', progress:55, dueInH:1},{label:'字',progress:35,dueInH:4},{label:'学',progress:72,dueInH:26},
       {label:'谢',progress:20,dueInH:0},{label:'好',progress:88,dueInH:72},{label:'语',progress:40,dueInH:6},
@@ -537,7 +545,13 @@
 
       // Settings actions
       btnExport: document.getElementById('btnExport'),
-      btnDelete: document.getElementById('btnDelete')
+      btnDelete: document.getElementById('btnDelete'),
+
+      // Navigation buttons/links
+      cardReviews: document.getElementById('cardReviews'),
+      cardLessons: document.getElementById('cardLessons'),
+      qlReviews: document.getElementById('qlReviews'),
+      qlLessons: document.getElementById('qlLessons'),
     };
 
     /* ---------------------------
@@ -572,17 +586,16 @@
     function eta(count){ if(!count) return '≈ 0m'; const secs = Math.round(count*9); const m=Math.floor(secs/60), s=secs%60; return `≈ ${m}m${s?` ${s}s`:''}` }
 
     /* ---------------------------
-       Top menus (level ranges) — closed by default; animated
+       TOP MENUS (level ranges)
     ----------------------------*/
-    const groupSize = 10; // 1–10, 11–20, …
-
+    const groupSize = 10;
     function buildChips(area, container){
       const maxLevel=60; container.innerHTML='';
       for(let from=1; from<=maxLevel; from+=groupSize){
         const to=Math.min(from+groupSize-1, maxLevel);
         const a=document.createElement('a'); a.className='chip';
         a.href=`levels.html?area=${encodeURIComponent(area)}&from=${from}&to=${to}`;
-        a.textContent=`${from}–${to}`; // arrow removed per request
+        a.textContent=`${from}–${to}`;
         container.appendChild(a);
       }
     }
@@ -655,22 +668,22 @@
     const forecastHours = Array.from({length:24}, (_,i)=> Math.max(0, Math.round( (Math.sin((i-6)/3)+1.15)*12 + (i%6===0?8:0) )));
     const forecastDays  = Array.from({length:7}, (_,i)=> [36,54,42,68,50,32,28][i] );
     let currentForecast = 'hours';
-    els.modeHours.addEventListener('click', ()=>setForecast('hours'));
-    els.modeDays.addEventListener('click', ()=>setForecast('days'));
+    document.getElementById('modeHours').addEventListener('click', ()=>setForecast('hours'));
+    document.getElementById('modeDays').addEventListener('click', ()=>setForecast('days'));
 
     function setForecast(mode){
       currentForecast = mode;
-      els.modeHours.setAttribute('aria-pressed', mode==='hours'); els.modeHours.setAttribute('aria-selected', mode==='hours');
-      els.modeDays.setAttribute('aria-pressed', mode==='days'); els.modeDays.setAttribute('aria-selected', mode==='days');
+      document.getElementById('modeHours').setAttribute('aria-pressed', mode==='hours'); document.getElementById('modeHours').setAttribute('aria-selected', mode==='hours');
+      document.getElementById('modeDays').setAttribute('aria-pressed', mode==='days'); document.getElementById('modeDays').setAttribute('aria-selected', mode==='days');
       drawForecast(); updateForecastBadges();
     }
     function updateForecastBadges(){
       const nextHour = forecastHours[0] ?? 0;
       const today = forecastHours.reduce((a,b)=>a+b,0);
       const tomorrow = forecastDays[1] ?? 0;
-      els.nextHour.textContent = nextHour;
-      els.todayTotal.textContent = today;
-      els.tomorrowTotal.textContent = tomorrow;
+      document.getElementById('nextHour').textContent = nextHour;
+      document.getElementById('todayTotal').textContent = today;
+      document.getElementById('tomorrowTotal').textContent = tomorrow;
     }
     function drawForecast(){
       const dpr = window.devicePixelRatio || 1;
@@ -713,9 +726,9 @@
     window.addEventListener('resize', drawForecast);
 
     /* ---------------------------
-       Upcoming (next 4 days) — all collapsed initially
+       Upcoming (next 4 days)
     ----------------------------*/
-    const HOURS_AHEAD = 24*4; // 4 days
+    const HOURS_AHEAD = 24*4;
     function genHourlySchedule(n){
       const out=[]; for(let i=0;i<n;i++){
         const now=Date.now(); const ts=now+i*60*60*1000; const h=new Date(ts).getHours();
@@ -726,8 +739,8 @@
     const hourly = genHourlySchedule(HOURS_AHEAD);
 
     function buildUpcoming(){
-      els.tzLabel.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      els.upcomingAcc.innerHTML='';
+      document.getElementById('tzLabel').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      document.getElementById('upcomingAcc').innerHTML='';
       const byDay = {};
       for(const e of hourly){
         const d = new Date(e.ts); const key = d.toLocaleDateString();
@@ -736,7 +749,7 @@
       const keys = Object.keys(byDay).slice(0,4);
       keys.forEach((key)=>{
         const list = byDay[key]; const total = list.reduce((a,b)=>a+b.count,0);
-        const details = document.createElement('details'); // closed by default
+        const details = document.createElement('details');
         const dayLabel = new Date(list[0]?.ts || Date.now()).toLocaleDateString(undefined,{weekday:'long', month:'short', day:'numeric'});
         details.innerHTML = `
           <summary>
@@ -756,33 +769,33 @@
         });
         if(!ul.children.length){ ul.innerHTML = `<div class="muted">No reviews predicted.</div>` }
         details.appendChild(ul);
-        els.upcomingAcc.appendChild(details);
+        document.getElementById('upcomingAcc').appendChild(details);
       });
     }
 
     /* ---------------------------
        Items card (area selector)
     ----------------------------*/
-    let itemArea = 'hanzi'; // 'hanzi' | 'vocab' | 'radicals'
+    let itemArea = 'hanzi';
     function setItemArea(area){
       itemArea = area;
-      els.areaHanzi.setAttribute('aria-pressed', area==='hanzi'); els.areaHanzi.setAttribute('aria-selected', area==='hanzi');
-      els.areaVocab.setAttribute('aria-pressed', area==='vocab'); els.areaVocab.setAttribute('aria-selected', area==='vocab');
-      els.areaRadical.setAttribute('aria-pressed', area==='radicals'); els.areaRadical.setAttribute('aria-selected', area==='radicals');
+      document.getElementById('areaHanzi').setAttribute('aria-pressed', area==='hanzi'); document.getElementById('areaHanzi').setAttribute('aria-selected', area==='hanzi');
+      document.getElementById('areaVocab').setAttribute('aria-pressed', area==='vocab'); document.getElementById('areaVocab').setAttribute('aria-selected', area==='vocab');
+      document.getElementById('areaRadical').setAttribute('aria-pressed', area==='radicals'); document.getElementById('areaRadical').setAttribute('aria-selected', area==='radicals');
       const label = area==='hanzi' ? 'Hanzi' : area==='vocab' ? 'Vocabulary' : 'Radicals';
-      els.lvlLabel.textContent = ` · ${label} · Level ${profile.level}`;
+      document.getElementById('lvlLabel').textContent = ` · ${label} · Level ${profile.level}`;
       buildLevelGrid();
     }
-    els.areaHanzi.addEventListener('click', ()=>setItemArea('hanzi'));
-    els.areaVocab.addEventListener('click', ()=>setItemArea('vocab'));
-    els.areaRadical.addEventListener('click', ()=>setItemArea('radicals'));
+    document.getElementById('areaHanzi').addEventListener('click', ()=>setItemArea('hanzi'));
+    document.getElementById('areaVocab').addEventListener('click', ()=>setItemArea('vocab'));
+    document.getElementById('areaRadical').addEventListener('click', ()=>setItemArea('radicals'));
 
     function dataset(){ return itemArea==='hanzi' ? dataHanzi : itemArea==='vocab' ? dataVocab : dataRadical }
 
     function buildLevelGrid(){
       const data = dataset();
-      els.levelGrid.innerHTML='';
-      if(!data.length){ els.levelGrid.innerHTML = `<div class="muted">Nothing to show.</div>`; return }
+      document.getElementById('levelGrid').innerHTML='';
+      if(!data.length){ document.getElementById('levelGrid').innerHTML = `<div class="muted">Nothing to show.</div>`; return }
       data.forEach(it=>{
         const wrap = document.createElement('div'); wrap.className='hanzi-item';
         const a = document.createElement('a'); a.href='#'; a.className='hanzi-tile';
@@ -792,39 +805,49 @@
         const fill=document.createElement('span'); fill.style.width=Math.max(0,Math.min(100,it.progress))+'%';
         meter.appendChild(fill);
         wrap.appendChild(a); wrap.appendChild(meter);
-        els.levelGrid.appendChild(wrap);
+        document.getElementById('levelGrid').appendChild(wrap);
       });
     }
 
     /* ---------------------------
-       Settings sheet (open/close + simple actions)
+       Settings sheet (open/close)
     ----------------------------*/
-    function openSheet(){ els.settingsSheet.classList.add('open'); els.settingsSheet.setAttribute('aria-hidden','false') }
-    function closeSheet(){ els.settingsSheet.classList.remove('open'); els.settingsSheet.setAttribute('aria-hidden','true') }
+    function openSheet(){ document.getElementById('settingsSheet').classList.add('open'); document.getElementById('settingsSheet').setAttribute('aria-hidden','false') }
+    function closeSheet(){ document.getElementById('settingsSheet').classList.remove('open'); document.getElementById('settingsSheet').setAttribute('aria-hidden','true') }
     document.getElementById('openSettings').addEventListener('click', openSheet);
     document.getElementById('closeSettings').addEventListener('click', closeSheet);
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSheet() });
-    document.addEventListener('click', (e)=>{ if(els.settingsSheet.classList.contains('open')){ const inside=e.target.closest('.sheet, #openSettings'); if(!inside) closeSheet() }});
-    if(els.btnExport) els.btnExport.addEventListener('click', ()=>alert('Export started (demo).'));
-    if(els.btnDelete) els.btnDelete.addEventListener('click', ()=>confirm('Delete your account? This cannot be undone. (demo)'));
+    document.addEventListener('click', (e)=>{ if(document.getElementById('settingsSheet').classList.contains('open')){ const inside=e.target.closest('.sheet, #openSettings'); if(!inside) closeSheet() }});
+    if(document.getElementById('btnExport')) document.getElementById('btnExport').addEventListener('click', ()=>alert('Export started (demo).'));
+    if(document.getElementById('btnDelete')) document.getElementById('btnDelete').addEventListener('click', ()=>confirm('Delete your account? This cannot be undone. (demo)'));
+
+    /* ---------------------------
+       Navigation wiring
+       - Works with normal anchor behavior
+       - Also adds JS listeners for robustness
+    ----------------------------*/
+    function go(path){ window.location.href = path }
+    // Action cards
+    els.cardReviews.addEventListener('click', (e)=>{ /* allow default, but ensure path */ if(e.metaKey||e.ctrlKey) return; e.preventDefault(); go(PATH.reviews) });
+    els.cardLessons.addEventListener('click', (e)=>{ if(e.metaKey||e.ctrlKey) return; e.preventDefault(); go(PATH.lessons) });
+    // Quick links
+    els.qlReviews.addEventListener('click', (e)=>{ if(e.metaKey||e.ctrlKey) return; e.preventDefault(); go(PATH.reviews) });
+    els.qlLessons.addEventListener('click', (e)=>{ if(e.metaKey||e.ctrlKey) return; e.preventDefault(); go(PATH.lessons) });
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='r') go(PATH.reviews);
+      if(e.key.toLowerCase()==='l') go(PATH.lessons);
+      if(e.key.toLowerCase()==='t') document.getElementById('themeBtn').click();
+    });
 
     /* ---------------------------
        Init
     ----------------------------*/
     function init(){
       tickClock(); initTheme();
-      // Forecast
       setForecast('hours'); drawForecast();
-      // Upcoming (all collapsed by default)
       buildUpcoming();
-      // Items card
       setItemArea('hanzi'); buildLevelGrid();
-      // Footer-only shortcuts
-      document.addEventListener('keydown', (e)=>{
-        if(e.key.toLowerCase()==='r') location.href='reviews.html';
-        if(e.key.toLowerCase()==='l') location.href='lessons.html';
-        if(e.key.toLowerCase()==='t') document.getElementById('themeBtn').click();
-      });
     }
     init();
   </script>
