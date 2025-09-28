@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Hanzi SRS — Master Chinese characters with a beautifully crafted spaced-repetition system built for real-world fluency." />
+  <meta name="theme-color" content="#0b0f19" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <title>Hanzi SRS — Learn Chinese characters the smart way</title>
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Hanzi SRS — Learn Chinese characters the smart way" />
+  <meta property="og:description" content="Premium SRS for hanzi. Intuitive reviews, rich mnemonics, radicals, tones, and examples — designed with craftsmanship." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'%3E%3Crect width='100%25' height='100%25' fill='%230b0f19'/%3E%3Ctext x='50%25' y='54%25' font-family='Segoe UI, Roboto, Arial' font-size='96' fill='white' text-anchor='middle'%3EHanzi SRS%3C/text%3E%3C/svg%3E" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Favicon (inline data URI) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='24' fill='%230b0f19'/%3E%3Ctext x='50' y='78' font-size='72' font-family='Segoe UI Symbol' fill='%23ffffff'%3E汉%3C/text%3E%3C/svg%3E" />
+
+  <!-- Fonts: use system stack for performance; falls back nicely on CJK -->
+  <style>
+    /* --- CSS Reset (modern, minimal) --- */
+    *,*::before,*::after{box-sizing:border-box}
+    html:focus-within{scroll-behavior:smooth}
+    body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+    ul[role='list'],ol[role='list']{list-style:none;margin:0;padding:0}
+    body{min-height:100vh;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;line-height:1.5}
+    img,svg,video,canvas,audio,iframe,embed,object{display:block;max-width:100%}
+    input,button,textarea,select{font:inherit}
+    :root{color-scheme:dark light}
+    /* --- Theme Tokens --- */
+    :root{
+      --bg: #0b0f19;
+      --bg-2: #0e1423;
+      --text: #e5e7eb;
+      --muted: #98a2b3;
+      --surface: rgba(255,255,255,0.04);
+      --surface-2: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --accent: hsl(257 90% 66%);
+      --accent-2: hsl(190 90% 60%);
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+      --radius: 14px;
+      --container: 1200px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #ffffff;
+        --bg-2: #f7f9fc;
+        --text: #0b1220;
+        --muted: #5b6573;
+        --surface: rgba(0,0,0,0.04);
+        --surface-2: rgba(0,0,0,0.06);
+        --border: rgba(17,24,39,0.12);
+        --shadow: 0 10px 30px rgba(2,6,23,.08),0 2px 8px rgba(2,6,23,.06);
+      }
+    }
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+    }
+    /* Background grid + glow */
+    .bg-wrap{
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background:
+        radial-gradient(1000px 500px at 80% -10%, color-mix(in oklab, var(--accent), transparent 65%), transparent 70%),
+        radial-gradient(800px 400px at 10% 0%, color-mix(in oklab, var(--accent-2), transparent 70%), transparent 70%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 30%, var(--bg) 100%);
+    }
+    .bg-grid{
+      position:absolute; inset: -1px;
+      background:
+        linear-gradient(transparent 97%, var(--border) 100%) 0 0 / 40px 40px,
+        linear-gradient(90deg, transparent 97%, var(--border) 100%) 0 0 / 40px 40px;
+      mask-image: radial-gradient(80% 60% at 50% 10%, #000 0%, #000 60%, transparent 85%);
+      opacity:.35;
+    }
+
+    /* Layout helpers */
+    .container{max-width:var(--container); margin-inline:auto; padding-inline: clamp(16px, 3vw, 32px);}
+    .stack{display:flex; flex-direction:column; gap: clamp(16px,1.6vw,24px)}
+    .row{display:flex; gap:24px; flex-wrap:wrap; align-items:center}
+    .center{text-align:center}
+    .grid{display:grid; gap:24px}
+    .grid-3{grid-template-columns: repeat(3, minmax(0,1fr))}
+    .grid-2{grid-template-columns: repeat(2, minmax(0,1fr))}
+    @media (max-width: 960px){ .grid-3{grid-template-columns:1fr 1fr} }
+    @media (max-width: 720px){ .grid-3,.grid-2{grid-template-columns:1fr} }
+
+    /* App Shell */
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{left:16px;top:16px;width:auto;height:auto;padding:10px 14px;background:var(--surface-2);backdrop-filter:blur(8px);border-radius:10px;border:1px solid var(--border)}
+    .nav{
+      position: sticky; top:0; backdrop-filter: blur(12px);
+      background: color-mix(in oklab, var(--bg), transparent 60%);
+      border-bottom: 1px solid var(--border); z-index: 40;
+    }
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; height:64px}
+    .brand{
+      display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:700; letter-spacing:.2px;
+    }
+    .brand-badge{
+      width:32px; height:32px; display:grid; place-items:center; border-radius:10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color:white; font-weight:900; box-shadow: var(--shadow);
+    }
+    .nav-links{display:flex; gap:18px; align-items:center}
+    .nav-links a{
+      text-decoration:none; color:var(--muted);
+      padding:8px 10px; border-radius:8px;
+    }
+    .nav-links a:hover,.nav-links a:focus-visible{color:var(--text); background:var(--surface)}
+    .btn{
+      --pad: 12px 16px; --bg: linear-gradient(90deg, var(--accent), var(--accent-2));
+      display:inline-flex; align-items:center; gap:10px;
+      padding: var(--pad); border-radius:12px; text-decoration:none; color:white; font-weight:600;
+      background: var(--bg); box-shadow: var(--shadow); border:0; cursor:pointer;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn:active{transform: translateY(0)}
+    .btn.secondary{
+      --bg: var(--surface);
+      color: var(--text);
+      border:1px solid var(--border); box-shadow:none;
+    }
+    .btn.ghost{
+      --bg: transparent; border:1px solid var(--border); box-shadow:none; color:var(--text)
+    }
+    .mobile-toggle{display:none}
+    @media (max-width: 960px){
+      .mobile-toggle{display:inline-flex}
+      .nav-links.primary{display:none}
+    }
+    .mobile-menu{display:none; border-top:1px solid var(--border); background: color-mix(in oklab, var(--bg), transparent 30%)}
+    .mobile-menu.open{display:block}
+    .mobile-menu a{display:block; padding:12px 2px; color:var(--muted); text-decoration:none}
+    .mobile-menu a:hover{color:var(--text)}
+
+    /* Typography */
+    .eyebrow{font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+    h1{font-weight:800; line-height:1.1; font-size: clamp(2rem, 3.8vw, 3.25rem); letter-spacing:-.01em}
+    h2{font-size: clamp(1.5rem, 2.4vw, 2rem); line-height:1.2; font-weight:800; letter-spacing:-.01em}
+    h3{font-size:1.1rem; font-weight:700}
+    p.lead{font-size: clamp(1rem, 1.3vw, 1.125rem); color:var(--muted); max-width: 70ch}
+
+    /* Cards & Surfaces */
+    .card{
+      background: linear-gradient(180deg, var(--surface-2), transparent);
+      border:1px solid var(--border); border-radius: var(--radius); padding: clamp(16px, 2.2vw, 22px);
+      box-shadow: var(--shadow);
+    }
+    .dash{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border); border-radius: 18px; padding: 16px; box-shadow: var(--shadow);
+    }
+    .mini-badge{font-size:.75rem; padding:4px 8px; border:1px solid var(--border); border-radius:999px; color:var(--muted)}
+    .check{display:inline-flex; align-items:center; gap:8px}
+    .check svg{flex:none}
+    .muted{color:var(--muted)}
+
+    /* Hero */
+    .hero{padding: clamp(40px, 7vw, 96px) 0}
+    .hero-cta{gap:12px}
+    .hero-visual{
+      position: relative; margin-top: 36px; display:grid; grid-template-columns: 1.2fr .8fr; gap:24px;
+    }
+    @media (max-width: 960px){ .hero-visual{grid-template-columns:1fr} }
+    .preview-card{
+      border-radius: 20px;
+      background:
+        radial-gradient(1200px 200px at 60% -40%, color-mix(in oklab, var(--accent), transparent 75%), transparent 80%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border); box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .preview-grid{display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:16px}
+    .preview-cell{
+      background: var(--surface); border:1px solid var(--border); border-radius: 14px; padding:16px; display:grid; place-items:center;
+      font-size: clamp(24px, 4vw, 40px); font-weight:800;
+    }
+
+    /* Features */
+    .feature{display:grid; gap:10px}
+    .icon{
+      width: 34px; height:34px; display:grid; place-items:center; border-radius:10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:white; box-shadow: var(--shadow)
+    }
+
+    /* Timeline */
+    .timeline{display:grid; gap:18px}
+    .timeline .step{display:grid; grid-template-columns: 32px 1fr; gap:14px; align-items:start}
+    .step .dot{width:10px; height:10px; background: var(--accent); border-radius:50%; margin-top:10px; box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent), transparent 70%)}
+
+    /* Demo */
+    .demo{
+      display:grid; grid-template-columns: 1.2fr .8fr; gap:24px; align-items:stretch;
+    }
+    @media (max-width: 960px){ .demo{grid-template-columns:1fr} }
+    .flashcard{
+      display:grid; align-content:space-between; gap:16px; min-height: 420px; padding: 20px 20px 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow);
+    }
+    .hanzi{
+      font-size: clamp(64px, 12vw, 140px); line-height: 1; font-weight: 900; text-align:center;
+      letter-spacing: -.02em;
+      text-shadow: 0 6px 30px color-mix(in oklab, var(--accent), transparent 60%);
+    }
+    .card-body{display:grid; gap:6px; text-align:center}
+    .reveal{display:none}
+    .flashcard.revealed .reveal{display:block}
+    .answer{font-size: clamp(18px, 1.6vw, 22px)}
+    .hints{color:var(--muted); font-size:.95rem}
+    .grade-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+    .grade{padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--surface); cursor:pointer; min-width: 88px; text-align:center}
+    .grade:focus-visible{outline:2px solid var(--accent)}
+    .grade.again{border-color: color-mix(in oklab, var(--danger), transparent 60%)}
+    .grade.hard{border-color: color-mix(in oklab, var(--warn), transparent 60%)}
+    .grade.good{border-color: color-mix(in oklab, var(--success), transparent 60%)}
+    .grade.easy{border-color: color-mix(in oklab, var(--accent), transparent 60%)}
+    .kbd{font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em; border:1px solid var(--border); padding:.12em .5em; border-radius:6px; background:var(--surface)}
+
+    .stats{display:grid; gap:14px}
+    .stat{display:flex; align-items:center; justify-content:space-between; padding:14px; border:1px solid var(--border); border-radius: 14px; background: var(--surface)}
+    .stat strong{font-size:1.2rem}
+    .due-time[aria-live]{min-height:1.4em}
+
+    /* Pricing */
+    .pricing{display:grid; gap:24px; grid-template-columns: repeat(3, minmax(0,1fr))}
+    @media (max-width: 960px){ .pricing{grid-template-columns:1fr 1fr} }
+    @media (max-width: 720px){ .pricing{grid-template-columns:1fr} }
+    .price{display:grid; gap:14px}
+    .price h3{display:flex; align-items:center; justify-content:space-between}
+    .price .tag{font-size:.8rem; padding:4px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
+
+    /* Footer */
+    footer{border-top:1px solid var(--border); margin-top: 64px; padding: 32px 0}
+    .footer-grid{display:grid; grid-template-columns: 1fr auto; gap:16px; align-items:center}
+    @media (max-width: 720px){ .footer-grid{grid-template-columns:1fr; gap:10px} }
+
+    /* Reveal on scroll */
+    .reveal-on-scroll{opacity:0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease}
+    .reveal-on-scroll.in{opacity:1; transform:none}
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .reveal-on-scroll{transition:none}
+      .btn{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="bg-grid"></div>
+  </div>
+
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Primary">
+    <div class="container nav-inner">
+      <a class="brand" href="#" aria-label="Hanzi SRS Home">
+        <span class="brand-badge" aria-hidden="true">汉</span>
+        <span>Hanzi SRS</span>
+        <span class="mini-badge" style="margin-left:6px">Beta</span>
+      </a>
+      <div class="nav-links primary" role="menubar" aria-label="Main">
+        <a role="menuitem" href="#how">How it works</a>
+        <a role="menuitem" href="#features">Features</a>
+        <a role="menuitem" href="#demo">Live demo</a>
+        <a role="menuitem" href="#pricing">Pricing</a>
+        <a role="menuitem" href="#faq">FAQ</a>
+      </div>
+      <div class="nav-links">
+        <a class="btn secondary" href="#" aria-label="Sign in">Sign in</a>
+        <a class="btn" href="#" aria-label="Get started free">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Get started
+        </a>
+        <button class="btn ghost mobile-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu" role="dialog" aria-label="Mobile">
+      <div class="container" style="padding:14px 0">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#demo">Live demo</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero container">
+      <div class="stack">
+        <span class="eyebrow">Spaced Repetition • Chinese Characters</span>
+        <h1>Master hanzi with a study flow you’ll actually enjoy.</h1>
+        <p class="lead">Hanzi SRS is a beautifully crafted learning system for Chinese characters: smart scheduling, radicals &amp; mnemonics, tones and examples — all in a calm, focused interface that stays out of your way.</p>
+        <div class="row hero-cta">
+          <a class="btn" href="#demo" aria-label="Try the live demo">
+            Try the live demo
+          </a>
+          <a class="btn secondary" href="#features" aria-label="Explore features">Explore features</a>
+          <span class="mini-badge" aria-live="polite">No credit card • Sync across devices</span>
+        </div>
+
+        <!-- Visual preview -->
+        <div class="hero-visual reveal-on-scroll" aria-hidden="true">
+          <div class="preview-card">
+            <div class="row" style="justify-content:space-between; margin-bottom:12px">
+              <span class="mini-badge">Today</span>
+              <span class="mini-badge">42 Reviews</span>
+            </div>
+            <div class="preview-grid">
+              <div class="preview-cell">你</div>
+              <div class="preview-cell">好</div>
+              <div class="preview-cell">学</div>
+              <div class="preview-cell">谢</div>
+              <div class="preview-cell">国</div>
+              <div class="preview-cell">语</div>
+              <div class="preview-cell">爱</div>
+              <div class="preview-cell">汉</div>
+              <div class="preview-cell">字</div>
+            </div>
+          </div>
+          <div class="dash">
+            <div class="row" style="justify-content:space-between">
+              <div class="stack">
+                <span class="eyebrow">Progress</span>
+                <h3>Level 3 · HSK 1–2</h3>
+                <span class="muted">Radicals learned: 54 · Total characters: 178</span>
+              </div>
+              <div class="stack" style="min-width:200px">
+                <div class="stat"><span class="muted">Due now</span><strong>12</strong></div>
+                <div class="stat"><span class="muted">Retention</span><strong>93%</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="container" style="padding: 18px 0 48px">
+      <div class="grid grid-3">
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 20V8a2 2 0 0 1 2-2h8M10 4h8a2 2 0 0 1 2 2v12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>1. Learn</h3>
+          <p class="muted">New characters are introduced with radicals, stroke hints, tone &amp; pinyin, mnemonics, and example words.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M12 4v16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>2. Review</h3>
+          <p class="muted">Smart intervals adapt to you. Short, focused sessions that fit your day — keep streaks without burnout.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 0 16 0A8 8 0 0 0 4 12Z" stroke="white" stroke-width="2"/><path d="M8 12l3 3 5-6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>3. Retain</h3>
+          <p class="muted">See long‑term gains with a curriculum mapped to HSK and frequency lists. Watch your comprehension compound.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="container" style="padding: 24px 0 12px">
+      <div class="stack center" style="align-items:center">
+        <span class="eyebrow">Designed for deep work</span>
+        <h2>Useful details that add up to real fluency.</h2>
+        <p class="lead">Everything you need, nothing you don’t. Built with intention — fast, calm, and consistent. The UI stays fresh even after thousands of reviews.</p>
+      </div>
+
+      <div class="grid grid-3" style="margin-top:24px">
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Radicals &amp; components</h3>
+          <p class="muted">See how characters are built — decompositions with visual highlights and shared patterns.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 6v12M6 12h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Mnemonic toolkit</h3>
+          <p class="muted">Curated mnemonics plus space to add your own. Keep what works; hide what doesn’t.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 9l7 7 7-7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Tone &amp; pinyin first</h3>
+          <p class="muted">Tone‑aware prompts, color cues, and audio pairs build correct pronunciation from day one.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M4 8h16M4 16h16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Curriculum by HSK</h3>
+          <p class="muted">Progress from HSK 1 to advanced with frequency‑informed ordering and gentle pacing.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8-8-3.582-8-8Z" stroke="white" stroke-width="2"/><path d="M9 13l2 2 4-5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Healthy pacing</h3>
+          <p class="muted">Daily caps and forecast prevent overload without breaking momentum.</p>
+        </div>
+        <div class="card feature reveal-on-scroll">
+          <div class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 7h18M6 12h12M9 17h6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Clean, consistent UI</h3>
+          <p class="muted">Accessible by default, keyboard‑first, and fast everywhere — desktop or mobile.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO -->
+    <section id="demo" class="container" style="padding: 48px 0 12px">
+      <div class="stack center" style="align-items:center">
+        <span class="eyebrow">Live demo</span>
+        <h2>Try a review card.</h2>
+        <p class="lead">Press <span class="kbd">Space</span> to flip. Grade with <span class="kbd">1</span>/<span class="kbd">2</span>/<span class="kbd">3</span>/<span class="kbd">4</span> for Again/Hard/Good/Easy.</p>
+      </div>
+
+      <div class="demo" style="margin-top: 24px">
+        <!-- Flashcard -->
+        <div class="flashcard" id="flashcard" aria-label="Flashcard demo" aria-live="polite">
+          <div class="card-body">
+            <div class="hanzi" id="hanzi">汉</div>
+            <div id="question" class="muted">What is the pronunciation &amp; meaning?</div>
+            <div class="reveal" id="answer">
+              <div class="answer"><strong id="pinyin">hàn</strong> — <span id="meaning">Chinese (language); Han</span></div>
+              <div class="hints" id="hints">Radicals: <span id="radicals">氵 water + 又 again</span></div>
+            </div>
+          </div>
+          <div class="row" style="justify-content:center; gap:12px">
+            <button class="btn secondary" id="toggle" aria-controls="answer">Show answer</button>
+          </div>
+          <div class="grade-row" style="margin-top:8px" aria-label="Select your grade">
+            <button class="grade again" data-grade="again"><span class="muted">1 ·</span> Again</button>
+            <button class="grade hard" data-grade="hard"><span class="muted">2 ·</span> Hard</button>
+            <button class="grade good" data-grade="good"><span class="muted">3 ·</span> Good</button>
+            <button class="grade easy" data-grade="easy"><span class="muted">4 ·</span> Easy</button>
+          </div>
+        </div>
+
+        <!-- Stats / Explainer -->
+        <aside class="stack">
+          <div class="card stats">
+            <div class="stat"><span class="muted">Due now</span><strong id="dueNow">—</strong></div>
+            <div class="stat"><span class="muted">Answered</span><strong id="answered">0</strong></div>
+            <div class="stat"><span class="muted">Accuracy</span><strong id="accuracy">—</strong></div>
+            <div class="stat"><span class="muted">Next due</span><strong class="due-time" id="nextDue" aria-live="polite">—</strong></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:6px">How the demo schedules</h3>
+            <p class="muted">This toy model simulates SRS intervals for illustration:</p>
+            <ul class="muted" style="margin-top:6px; padding-left:18px">
+              <li><strong>Again</strong>: 30s</li>
+              <li><strong>Hard</strong>: ×1.2</li>
+              <li><strong>Good</strong>: ×2.5 (min 1m)</li>
+              <li><strong>Easy</strong>: ×4 (min 5m)</li>
+            </ul>
+            <p class="muted" style="margin-top:8px">The real app uses a more nuanced scheduler with memory models and limits.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="container" style="padding: 48px 0 12px">
+      <div class="stack center" style="align-items:center">
+        <span class="eyebrow">Simple, fair pricing</span>
+        <h2>Start free. Upgrade when you’re ready.</h2>
+      </div>
+      <div class="pricing" style="margin-top:24px">
+        <div class="card price reveal-on-scroll">
+          <h3>Free <span class="tag">Get started</span></h3>
+          <p class="muted">Everything to learn at your pace.</p>
+          <ul class="muted" style="margin-top:8px; padding-left:18px">
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Daily reviews</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>HSK‑aligned curriculum</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Sync across devices</li>
+          </ul>
+          <a class="btn" href="#" style="margin-top:12px">Create account</a>
+        </div>
+
+        <div class="card price reveal-on-scroll" style="border:2px solid color-mix(in oklab, var(--accent), transparent 60%)">
+          <h3>Pro <span class="tag">Best value</span></h3>
+          <p class="muted">For serious learners who want everything.</p>
+          <p style="font-size:2rem; font-weight:800; margin-top:6px">$7<span class="muted" style="font-size:1rem">/mo</span></p>
+          <ul class="muted" style="margin-top:8px; padding-left:18px">
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Audio &amp; example sentences</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Custom decks &amp; tags</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Advanced scheduler</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Offline mode</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Priority support</li>
+          </ul>
+          <a class="btn" href="#" style="margin-top:12px">Start Pro trial</a>
+        </div>
+
+        <div class="card price reveal-on-scroll">
+          <h3>Teams <span class="tag">Educators</span></h3>
+          <p class="muted">Bring Hanzi SRS to your class or group.</p>
+          <ul class="muted" style="margin-top:8px; padding-left:18px">
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Shared curricula</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Progress dashboards</li>
+            <li class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>SSO &amp; admin tools</li>
+          </ul>
+          <a class="btn secondary" href="#" style="margin-top:12px">Contact sales</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="container" style="padding: 48px 0">
+      <div class="stack center" style="align-items:center">
+        <span class="eyebrow">FAQ</span>
+        <h2>Answers to common questions</h2>
+      </div>
+      <div class="grid grid-2" style="margin-top:24px">
+        <details class="card reveal-on-scroll"><summary><strong>Is this like WaniKani, but for hanzi?</strong></summary><p class="muted" style="margin-top:10px">Exactly the idea — Chinese characters with a premium, focused experience and an SRS tuned for retention without overwhelm.</p></details>
+        <details class="card reveal-on-scroll"><summary><strong>Which characters and order?</strong></summary><p class="muted" style="margin-top:10px">Core curriculum follows HSK + frequency, with radicals first, then high‑utility characters, then compounds.</p></details>
+        <details class="card reveal-on-scroll"><summary><strong>Can I create custom decks?</strong></summary><p class="muted" style="margin-top:10px">Yes. Tag by textbook, topic, or frequency and mix with the main deck. Pro adds advanced filters and imports.</p></details>
+        <details class="card reveal-on-scroll"><summary><strong>Does it support traditional characters?</strong></summary><p class="muted" style="margin-top:10px">Yes — toggle simplified/traditional per deck; mappings and variants are handled automatically.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div class="row" style="gap:12px">
+        <a class="brand" href="#"><span class="brand-badge" aria-hidden="true">汉</span><span>Hanzi SRS</span></a>
+        <span class="muted">© <span id="year"></span> Hanzi SRS</span>
+      </div>
+      <div class="row" style="gap:16px">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="mailto:hello@hanzisrs.app">Contact</a>
+        <a class="muted" href="#" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.477 2 2 6.59 2 12.253c0 4.527 2.865 8.363 6.84 9.72.5.095.682-.222.682-.493 0-.243-.01-1.049-.015-1.902-2.782.616-3.37-1.2-3.37-1.2-.455-1.174-1.11-1.487-1.11-1.487-.908-.629.069-.617.069-.617 1.003.072 1.53 1.05 1.53 1.05.892 1.566 2.342 1.114 2.912.852.091-.666.35-1.114.636-1.37-2.22-.258-4.555-1.14-4.555-5.074 0-1.12.39-2.036 1.03-2.754-.103-.258-.447-1.3.098-2.708 0 0 .84-.273 2.75 1.052a9.33 9.33 0 0 1 2.504-.344 9.3 9.3 0 0 1 2.503.344c1.91-1.325 2.75-1.052 2.75-1.052.546 1.409.202 2.45.1 2.708.64.718 1.028 1.635 1.028 2.754 0 3.944-2.338 4.813-4.566 5.067.36.32.68.951.68 1.916 0 1.384-.013 2.499-.013 2.837 0 .273.18.592.688.492C19.138 20.613 22 16.778 22 12.253 22 6.59 17.522 2 12 2Z" fill="currentColor"/></svg>
+        </a>
+        <a class="muted" href="#" aria-label="X / Twitter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18.244 2h3.308l-7.227 8.26 8.48 11.74h-6.64l-5.197-6.793L5.08 22H1.77l7.73-8.84L1.29 2h6.77l4.69 6.19L18.244 2Zm-1.162 18.02h1.832L7.01 3.86H5.062l12.02 16.16Z" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Minimal, focused JS (no frameworks) -->
+  <script>
+    // Mobile menu
+    const toggleBtn = document.querySelector('.mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    toggleBtn?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { mobileMenu.classList.remove('open'); toggleBtn.setAttribute('aria-expanded','false'); }
+    });
+
+    // Reveal on scroll
+    const ro = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
+    }, {threshold: 0.2});
+    document.querySelectorAll('.reveal-on-scroll').forEach(el => ro.observe(el));
+
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // --- SRS DEMO ---
+    const deck = [
+      {id:1, char:'汉', pinyin:'hàn', meaning:'Chinese (language); Han', radicals:'氵 water + 又 again'},
+      {id:2, char:'字', pinyin:'zì', meaning:'character; letter', radicals:'宀 roof + 子 child'},
+      {id:3, char:'学', pinyin:'xué', meaning:'to learn; study', radicals:'⺍ small + 冖 cover + 子 child'},
+      {id:4, char:'谢', pinyin:'xiè', meaning:'to thank', radicals:'讠speech + 射 shoot'},
+      {id:5, char:'词', pinyin:'cí', meaning:'word; term', radicals:'讠speech + 司 manage'},
+      {id:6, char:'爱', pinyin:'ài', meaning:'love', radicals:'⺤ claws + 心 heart'},
+      {id:7, char:'国', pinyin:'guó', meaning:'country', radicals:'囗 enclosure + 玉 jade'},
+      {id:8, char:'你', pinyin:'nǐ', meaning:'you', radicals:'亻 person + 尔 you'},
+      {id:9, char:'好', pinyin:'hǎo', meaning:'good', radicals:'女 woman + 子 child'},
+      {id:10, char:'语', pinyin:'yǔ', meaning:'language; speech', radicals:'讠speech + 吾 I'},
+      {id:11, char:'天', pinyin:'tiān', meaning:'sky; day', radicals:'大 big + 一 one'},
+      {id:12, char:'书', pinyin:'shū', meaning:'book', radicals:'聿 brush + 丨 line'}
+    ].map(c => ({...c, ease:2.3, reps:0, lapses:0, interval:0, due: Date.now()}));
+
+    const els = {
+      card: document.getElementById('flashcard'),
+      hanzi: document.getElementById('hanzi'),
+      pinyin: document.getElementById('pinyin'),
+      meaning: document.getElementById('meaning'),
+      radicals: document.getElementById('radicals'),
+      toggle: document.getElementById('toggle'),
+      dueNow: document.getElementById('dueNow'),
+      answered: document.getElementById('answered'),
+      accuracy: document.getElementById('accuracy'),
+      nextDue: document.getElementById('nextDue'),
+      answerBox: document.getElementById('answer'),
+    };
+
+    let current = null;
+    let answered = 0, correct = 0;
+
+    function pickNext(){
+      const now = Date.now();
+      const due = deck.filter(c => c.due <= now);
+      due.sort((a,b)=> a.due - b.due);
+      if (due.length){
+        return due[0];
+      } else {
+        // nothing due yet — take the earliest upcoming
+        deck.sort((a,b)=> a.due - b.due);
+        return deck[0];
+      }
+    }
+
+    function formatDelta(ms){
+      if (ms <= 0) return 'now';
+      const s = Math.round(ms / 1000);
+      if (s < 60) return s + 's';
+      const m = Math.round(s / 60);
+      if (m < 60) return m + 'm';
+      const h = Math.round(m / 60);
+      return h + 'h';
+    }
+
+    function refreshStats(){
+      const now = Date.now();
+      const dueCount = deck.filter(c => c.due <= now).length;
+      els.dueNow.textContent = String(dueCount);
+      els.answered.textContent = String(answered);
+      els.accuracy.textContent = answered ? Math.round((correct/answered)*100) + '%' : '—';
+      const soonest = deck.reduce((a,b)=> a.due < b.due ? a : b, deck[0]);
+      els.nextDue.textContent = formatDelta(soonest.due - now);
+    }
+
+    function render(card){
+      current = card;
+      els.card.classList.remove('revealed');
+      els.hanzi.textContent = card.char;
+      els.pinyin.textContent = card.pinyin;
+      els.meaning.textContent = card.meaning;
+      els.radicals.textContent = card.radicals;
+      els.toggle.textContent = 'Show answer';
+      refreshStats();
+    }
+
+    function showAnswer(){
+      els.card.classList.add('revealed');
+      els.toggle.textContent = 'Hide answer';
+    }
+
+    function hideAnswer(){
+      els.card.classList.remove('revealed');
+      els.toggle.textContent = 'Show answer';
+    }
+
+    function grade(kind){
+      const now = Date.now();
+      const c = current;
+      const min = (m)=> m*60*1000;
+      let isCorrect = false;
+
+      switch(kind){
+        case 'again':
+          c.interval = 0.5; // 30s
+          c.lapses += 1;
+          break;
+        case 'hard':
+          c.interval = Math.max( (c.interval || 1) * 1.2, 1 );
+          c.ease = Math.max(1.3, c.ease - 0.05);
+          break;
+        case 'good':
+          c.interval = Math.max( (c.interval || 1) * 2.5, 1 );
+          c.ease = Math.min(3.0, c.ease + 0.02);
+          isCorrect = true;
+          break;
+        case 'easy':
+          c.interval = Math.max( (c.interval || 1) * 4.0, 5 );
+          c.ease = Math.min(3.5, c.ease + 0.05);
+          isCorrect = true;
+          break;
+      }
+      c.reps += 1;
+      c.due = now + min(c.interval);
+      answered += 1; if(isCorrect) correct += 1;
+
+      // move on
+      hideAnswer();
+      render(pickNext());
+    }
+
+    // Wire up UI
+    els.toggle.addEventListener('click', () => {
+      els.card.classList.contains('revealed') ? hideAnswer() : showAnswer();
+    });
+    document.querySelectorAll('.grade').forEach(btn => {
+      btn.addEventListener('click', () => grade(btn.dataset.grade));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.target && ['INPUT','TEXTAREA','SELECT','BUTTON'].includes(e.target.tagName)) return;
+      if (e.code === 'Space'){ e.preventDefault(); els.card.classList.contains('revealed') ? hideAnswer() : showAnswer(); }
+      if (e.key === '1') grade('again');
+      if (e.key === '2') grade('hard');
+      if (e.key === '3') grade('good');
+      if (e.key === '4') grade('easy');
+    });
+
+    // Kick off
+    render(pickNext());
+    setInterval(refreshStats, 1000);
+  </script>
+
+  <!-- Structured data (basic) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Hanzi SRS",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "7.00",
+      "priceCurrency": "USD"
+    },
+    "description": "A premium, intuitive SRS for learning Chinese characters with radicals, mnemonics, and examples."
+  }
+  </script>
+</body>
+</html>
