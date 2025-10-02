@@ -1,0 +1,34 @@
+{
+  "range": "21-30",
+  "title": "Hanzi Levels 21–30",
+  "description": "Intermediate characters for expanding vocabulary",
+  "items": [
+    {
+      "slug": "huo",
+      "character": "火",
+      "title": "火 (huǒ)",
+      "description": "The character for 'fire'",
+      "pinyin": "huǒ",
+      "meaning": "fire",
+      "content": "<p><strong>Meaning:</strong> fire, flame</p><p><strong>Pinyin:</strong> huǒ</p><p><strong>Stroke count:</strong> 4</p><p>This character represents fire. The strokes resemble flames rising upward.</p>"
+    },
+    {
+      "slug": "shan",
+      "character": "山",
+      "title": "山 (shān)",
+      "description": "The character for 'mountain'",
+      "pinyin": "shān",
+      "meaning": "mountain",
+      "content": "<p><strong>Meaning:</strong> mountain, hill</p><p><strong>Pinyin:</strong> shān</p><p><strong>Stroke count:</strong> 3</p><p>This character means mountain. The three vertical strokes represent mountain peaks.</p>"
+    },
+    {
+      "slug": "mu",
+      "character": "木",
+      "title": "木 (mù)",
+      "description": "The character for 'tree' or 'wood'",
+      "pinyin": "mù",
+      "meaning": "tree, wood",
+      "content": "<p><strong>Meaning:</strong> tree, wood, timber</p><p><strong>Pinyin:</strong> mù</p><p><strong>Stroke count:</strong> 4</p><p>This character represents a tree. The horizontal stroke is the branches, the vertical stroke is the trunk, and the diagonal strokes are the roots.</p>"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "range": "51-60",
+  "title": "Hanzi Levels 51–60",
+  "description": "Upper intermediate characters",
+  "items": [
+    {
+      "slug": "guo",
+      "character": "国",
+      "title": "国 (guó)",
+      "description": "The character for 'country' or 'nation'",
+      "pinyin": "guó",
+      "meaning": "country, nation",
+      "content": "<p><strong>Meaning:</strong> country, nation, state</p><p><strong>Pinyin:</strong> guó</p><p><strong>Stroke count:</strong> 8</p><p>This character means country or nation. It shows a bordered territory (囗) with jade (玉) inside, representing the precious land.</p>"
+    },
+    {
+      "slug": "han",
+      "character": "汉",
+      "title": "汉 (hàn)",
+      "description": "The character for 'Chinese' or 'Han'",
+      "pinyin": "hàn",
+      "meaning": "Chinese, Han",
+      "content": "<p><strong>Meaning:</strong> Chinese, Han dynasty, man</p><p><strong>Pinyin:</strong> hàn</p><p><strong>Stroke count:</strong> 5</p><p>This character refers to the Han Chinese people and the Han dynasty. It combines the water radical with a phonetic component.</p>"
+    }
+  ]
+}

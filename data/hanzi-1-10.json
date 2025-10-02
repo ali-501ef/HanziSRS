@@ -1,0 +1,34 @@
+{
+  "range": "1-10",
+  "title": "Hanzi Levels 1–10",
+  "description": "Basic characters for beginners",
+  "items": [
+    {
+      "slug": "yi",
+      "character": "一",
+      "title": "一 (yī)",
+      "description": "The character for 'one'",
+      "pinyin": "yī",
+      "meaning": "one",
+      "content": "<p><strong>Meaning:</strong> one, single</p><p><strong>Pinyin:</strong> yī</p><p><strong>Stroke count:</strong> 1</p><p>This is the simplest Chinese character, representing the number one. It is a single horizontal stroke.</p>"
+    },
+    {
+      "slug": "ren",
+      "character": "人",
+      "title": "人 (rén)",
+      "description": "The character for 'person'",
+      "pinyin": "rén",
+      "meaning": "person",
+      "content": "<p><strong>Meaning:</strong> person, human</p><p><strong>Pinyin:</strong> rén</p><p><strong>Stroke count:</strong> 2</p><p>This character represents a person. The two strokes suggest a standing human figure.</p>"
+    },
+    {
+      "slug": "da",
+      "character": "大",
+      "title": "大 (dà)",
+      "description": "The character for 'big'",
+      "pinyin": "dà",
+      "meaning": "big",
+      "content": "<p><strong>Meaning:</strong> big, large, great</p><p><strong>Pinyin:</strong> dà</p><p><strong>Stroke count:</strong> 3</p><p>This character means big or large. It resembles a person with outstretched arms and legs.</p>"
+    }
+  ]
+}

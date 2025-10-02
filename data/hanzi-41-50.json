@@ -1,0 +1,34 @@
+{
+  "range": "41-50",
+  "title": "Hanzi Levels 41–50",
+  "description": "Intermediate level characters",
+  "items": [
+    {
+      "slug": "zhong",
+      "character": "中",
+      "title": "中 (zhōng)",
+      "description": "The character for 'middle' or 'center'",
+      "pinyin": "zhōng",
+      "meaning": "middle, center",
+      "content": "<p><strong>Meaning:</strong> middle, center, China</p><p><strong>Pinyin:</strong> zhōng</p><p><strong>Stroke count:</strong> 4</p><p>This character means middle or center. The vertical stroke through the center represents something being in the middle.</p>"
+    },
+    {
+      "slug": "xue",
+      "character": "学",
+      "title": "学 (xué)",
+      "description": "The character for 'study' or 'learn'",
+      "pinyin": "xué",
+      "meaning": "study, learn",
+      "content": "<p><strong>Meaning:</strong> study, learn, school</p><p><strong>Pinyin:</strong> xué</p><p><strong>Stroke count:</strong> 8</p><p>This character means to study or learn. It is commonly used in words related to education.</p>"
+    },
+    {
+      "slug": "sheng",
+      "character": "生",
+      "title": "生 (shēng)",
+      "description": "The character for 'life' or 'birth'",
+      "pinyin": "shēng",
+      "meaning": "life, birth",
+      "content": "<p><strong>Meaning:</strong> life, birth, grow</p><p><strong>Pinyin:</strong> shēng</p><p><strong>Stroke count:</strong> 5</p><p>This character represents life or birth. It shows a plant sprouting from the ground.</p>"
+    }
+  ]
+}

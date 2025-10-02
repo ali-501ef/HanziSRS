@@ -1,0 +1,25 @@
+{
+  "range": "31-40",
+  "title": "Hanzi Levels 31–40",
+  "description": "Advanced beginner characters",
+  "items": [
+    {
+      "slug": "ri",
+      "character": "日",
+      "title": "日 (rì)",
+      "description": "The character for 'sun' or 'day'",
+      "pinyin": "rì",
+      "meaning": "sun, day",
+      "content": "<p><strong>Meaning:</strong> sun, day</p><p><strong>Pinyin:</strong> rì</p><p><strong>Stroke count:</strong> 4</p><p>This character represents the sun or a day. It resembles an ancient pictograph of the sun.</p>"
+    },
+    {
+      "slug": "yue",
+      "character": "月",
+      "title": "月 (yuè)",
+      "description": "The character for 'moon' or 'month'",
+      "pinyin": "yuè",
+      "meaning": "moon, month",
+      "content": "<p><strong>Meaning:</strong> moon, month</p><p><strong>Pinyin:</strong> yuè</p><p><strong>Stroke count:</strong> 4</p><p>This character means moon or month. It derives from an ancient pictograph showing the crescent moon.</p>"
+    }
+  ]
+}

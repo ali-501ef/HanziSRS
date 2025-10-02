@@ -1,0 +1,25 @@
+{
+  "range": "11-20",
+  "title": "Hanzi Levels 11–20",
+  "description": "Essential characters for daily communication",
+  "items": [
+    {
+      "slug": "tian",
+      "character": "天",
+      "title": "天 (tiān)",
+      "description": "The character for 'sky' or 'heaven'",
+      "pinyin": "tiān",
+      "meaning": "sky, heaven",
+      "content": "<p><strong>Meaning:</strong> sky, heaven, day</p><p><strong>Pinyin:</strong> tiān</p><p><strong>Stroke count:</strong> 4</p><p>This character represents the sky or heaven. It shows a person (大) with a line above representing the sky.</p>"
+    },
+    {
+      "slug": "shui",
+      "character": "水",
+      "title": "水 (shuǐ)",
+      "description": "The character for 'water'",
+      "pinyin": "shuǐ",
+      "meaning": "water",
+      "content": "<p><strong>Meaning:</strong> water, liquid</p><p><strong>Pinyin:</strong> shuǐ</p><p><strong>Stroke count:</strong> 4</p><p>This character means water. Its form suggests flowing water with a central stream and drops on the sides.</p>"
+    }
+  ]
+}
