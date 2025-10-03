@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Hanzi SRS — Hanzi Item" />
+  <meta name="theme-color" content="#0b0f19" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <title>Hanzi SRS — Item</title>
+
+  <style>
+    /* ---------------- Reset & tokens ---------------- */
+    *,*::before,*::after{box-sizing:border-box}
+    body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+    img,svg,video,canvas{display:block;max-width:100%}
+    input,button,textarea,select{font:inherit}
+    :root{color-scheme:dark light}
+    :root{
+      /* dark defaults */
+      --bg:#0b0f19; --bg-2:#0e1423; --text:#e5e7eb; --muted:#98a2b3;
+      --surface:rgba(255,255,255,.04); --surface-2:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+      --accent:hsl(257 90% 66%); --accent-2:hsl(190 90% 60%); --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+      --container:1100px; --radius:16px; --gap:18px;
+      --navH:64px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f8fb; --bg-2:#eef2f8; --text:#0b1220; --muted:#667085;
+        --surface:#ffffff; --surface-2:#f3f6fb; --border:#d7dee9;
+        --shadow:0 10px 30px rgba(11,18,32,.08), 0 2px 8px rgba(11,18,32,.06);
+      }
+    }
+    html[data-theme="light"]{
+      --bg:#f6f8fb; --bg-2:#eef2f8; --text:#0b1220; --muted:#667085;
+      --surface:#ffffff; --surface-2:#f3f6fb; --border:#d7dee9;
+      --shadow:0 10px 30px rgba(11,18,32,.08), 0 2px 8px rgba(11,18,32,.06);
+    }
+    html[data-theme="dark"]{
+      --bg:#0b0f19; --bg-2:#0e1423; --text:#e5e7eb; --muted:#98a2b3;
+      --surface:rgba(255,255,255,.04); --surface-2:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+    }
+
+    body{
+      min-height:100vh; background:var(--bg); color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans",
+                   "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; line-height:1.55;
+    }
+    .bg{position:fixed; inset:0; z-index:-1; background:
+      radial-gradient(1000px 420px at 85% -10%, color-mix(in oklab, var(--accent), transparent 76%), transparent 75%),
+      radial-gradient(900px 360px at 0% 0%, color-mix(in oklab, var(--accent-2), transparent 82%), transparent 75%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 40%, var(--bg) 100%)}
+    .bg::after{content:""; position:absolute; inset:-1px; opacity:.25; background:
+      linear-gradient(transparent 97%, var(--border) 100%) 0 0/40px 40px,
+      linear-gradient(90deg, transparent 97%, var(--border) 100%) 0 0/40px 40px;
+      mask-image: radial-gradient(80% 60% at 50% 10%, #000 0%, #000 60%, transparent 85%)}
+
+    .container{max-width:var(--container); margin-inline:auto; padding-inline:clamp(16px,3vw,32px)}
+    .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .stack{display:flex; flex-direction:column; gap:10px}
+    .grid{display:grid; gap:var(--gap)}
+    .grid-2{grid-template-columns: 1.4fr .85fr}
+    @media (max-width:940px){ .grid-2{grid-template-columns:1fr} }
+
+    /* ---------------- Nav ---------------- */
+    .nav{position:sticky; top:0; z-index:60; backdrop-filter: blur(12px);
+      background: color-mix(in oklab, var(--bg), transparent 55%); border-bottom:1px solid var(--border)}
+    .nav-inner{height:var(--navH); display:flex; align-items:center; justify-content:space-between}
+    .brand{display:flex; gap:10px; align-items:center; color:inherit; text-decoration:none; font-weight:900}
+    .brand-badge{width:32px; height:32px; display:grid; place-items:center; border-radius:10px; color:#fff;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow:var(--shadow)}
+    .btn{display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); background:var(--surface);
+      padding:10px 14px; border-radius:12px; color:var(--text); text-decoration:none; cursor:pointer; font-weight:800; transition:transform .15s ease}
+    .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
+    .btn.ghost{background:transparent}
+    .btn.primary{color:#fff; border:none; background:linear-gradient(135deg, var(--accent), var(--accent-2))}
+    .pill{padding:6px 10px; border:1px solid var(--border); border-radius:999px}
+    .muted{color:var(--muted)}
+
+    /* ---------------- Panels & cards ---------------- */
+    .panel{background:linear-gradient(180deg, var(--surface-2), transparent); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:16px}
+    .card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow)}
+
+    /* ---------------- Hero / header ---------------- */
+    .hero{display:grid; grid-template-columns: auto 1fr auto; gap:16px; align-items:center}
+    .glyph-lg{width:110px; height:110px; border-radius:22px; display:grid; place-items:center; font-size:68px; font-weight:900; color:#fff;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow:var(--shadow)}
+    .title{font-size:clamp(1.5rem,2.6vw,2rem); font-weight:900}
+    .sub{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .srs-ring{--pct:0; --col:var(--ok); width:110px; height:110px; border-radius:50%; background:conic-gradient(var(--col) calc(var(--pct)*1%), var(--surface-2) 0);
+      display:grid; place-items:center}
+    .srs-ring span{width:78px; height:78px; border-radius:50%; display:grid; place-items:center; background:var(--bg); border:1px solid var(--border); font-weight:900}
+
+    /* ---------------- Sticky mini header ---------------- */
+    .mini-head{position:sticky; top:calc(var(--navH) + 6px); z-index:50; border:1px solid var(--border); background:color-mix(in oklab, var(--bg), transparent 8%); backdrop-filter: blur(8px);
+      border-radius:14px; padding:10px 12px; margin-top:12px; display:flex; align-items:center; justify-content:space-between}
+    .mini-head .left{display:flex; align-items:center; gap:10px; font-weight:900}
+    .mini-glyph{width:34px; height:34px; border-radius:10px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent-2))}
+    .tags{display:flex; gap:8px; flex-wrap:wrap}
+
+    /* ---------------- Content blocks ---------------- */
+    h2{font-size:1.1rem; font-weight:900}
+    .rad-chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; border:1px solid var(--border); background:var(--surface); font-weight:800; text-decoration:none; color:var(--text)}
+    .chip .r{font-size:22px; font-weight:900}
+    .badge{padding:4px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); font-weight:700}
+    .spoiler{border:1px dashed var(--border); border-radius:12px; padding:12px; position:relative}
+    .spoiler[data-hidden="true"] .spoiler-body{filter:blur(5px); opacity:.7; user-select:none}
+    .spoiler .toggle{position:absolute; top:8px; right:8px}
+    .ex-list{display:grid; gap:10px}
+    .ex{border:1px solid var(--border); border-radius:12px; padding:12px; background:var(--surface)}
+    .ex .zh{font-size:1.05rem; font-weight:800}
+    .ex .py{color:var(--muted)}
+    .vocab-grid{display:grid; gap:10px; grid-template-columns: repeat(auto-fill, minmax(180px,1fr))}
+    .vocab{border:1px solid var(--border); border-radius:14px; padding:12px; background:var(--surface)}
+    .vocab .w{font-size:1.1rem; font-weight:900}
+    .timeline{display:flex; gap:8px; flex-wrap:wrap}
+    .step{display:flex; align-items:center; gap:8px}
+    .dot{width:10px; height:10px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border)}
+    .step.active .dot{background:linear-gradient(90deg, var(--accent), var(--accent-2)); border:none}
+    .separator{height:1px; background:var(--border); margin:8px 0}
+
+    footer{border-top:1px solid var(--border); margin-top:26px; padding:22px 0; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Primary">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html" aria-label="Back to dashboard">
+        <span class="brand-badge" aria-hidden="true">汉</span>
+        <span>Hanzi SRS</span>
+        <span class="pill">Item</span>
+      </a>
+      <div class="row">
+        <a class="btn" href="reviews.html" title="Go to reviews">Reviews</a>
+        <a class="btn" href="lessons.html" title="Go to lessons">Lessons</a>
+        <button id="themeBtn" class="btn" aria-label="Toggle theme">
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95 6.95-1.41-1.41M7.46 7.46 6.05 6.05m12.9 0-1.41 1.41M7.46 16.54l-1.41 1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Theme
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="margin-top:16px">
+    <!-- HERO -->
+    <section class="panel hero" id="hero">
+      <div class="glyph-lg" id="glyph">学</div>
+      <div class="stack">
+        <div class="title"><span id="char">学</span> <span class="muted" id="pinyin">xué</span></div>
+        <div class="sub">
+          <span class="pill">Meaning: <b id="meaning">learn; study</b></span>
+          <span class="pill">Level <b id="level">3</b></span>
+          <span class="pill">Frequency <b id="freq">A</b></span>
+          <button id="audioBtn" class="btn">🔊 Audio</button>
+          <button id="starBtn" class="btn">☆ Star</button>
+        </div>
+        <div class="tags">
+          <span class="badge">Radicals linked</span>
+          <span class="badge">Words attached</span>
+          <span class="badge">Mnemonics available</span>
+        </div>
+      </div>
+
+      <div class="srs-ring" id="srsRing" style="--pct:40; --col:var(--warn)">
+        <span id="srsLabel">Apprentice 3</span>
+      </div>
+    </section>
+
+    <!-- Mini sticky header -->
+    <div class="mini-head" aria-label="Quick actions">
+      <div class="left">
+        <div class="mini-glyph" id="miniGlyph">学</div>
+        <div><b id="miniTitle">学</b> · <span class="muted" id="miniPinyin">xué</span></div>
+      </div>
+      <div class="row">
+        <a class="btn primary" id="btnPractice" href="reviews.html">Practice now</a>
+        <a class="btn" id="btnAddLesson" href="lessons.html">Add to lessons</a>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <section class="grid grid-2" style="margin-top:12px">
+      <!-- LEFT: Core content -->
+      <div class="stack">
+        <!-- Radicals -->
+        <div class="card">
+          <h2>Radicals</h2>
+          <p class="muted" style="margin-top:6px">These components form <b id="charInline">学</b>.</p>
+          <div id="radList" class="rad-chips" style="margin-top:10px"></div>
+        </div>
+
+        <!-- Mnemonics (spoilerable) -->
+        <div class="card">
+          <div class="row" style="justify-content:space-between">
+            <h2>Mnemonics</h2>
+            <label class="row" style="gap:6px"><input id="spoilerSwitch" type="checkbox"> Hide by default</label>
+          </div>
+
+          <div id="mnMeaning" class="spoiler" data-hidden="false" style="margin-top:10px">
+            <button class="btn ghost toggle">Reveal / Hide</button>
+            <div class="stack spoiler-body">
+              <strong>Meaning mnemonic</strong>
+              <p id="meaningMemo" class="muted"></p>
+            </div>
+          </div>
+          <div id="mnReading" class="spoiler" data-hidden="false" style="margin-top:10px">
+            <button class="btn ghost toggle">Reveal / Hide</button>
+            <div class="stack spoiler-body">
+              <strong>Reading mnemonic</strong>
+              <p id="readingMemo" class="muted"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Examples -->
+        <div class="card">
+          <h2>Example sentences</h2>
+          <div id="examples" class="ex-list" style="margin-top:10px"></div>
+        </div>
+
+        <!-- Vocabulary using the character -->
+        <div class="card">
+          <div class="row" style="justify-content:space-between">
+            <h2>Words that use <span id="charInline2">学</span></h2>
+            <a class="btn" id="seeMoreVocab" href="#">See all</a>
+          </div>
+          <div id="vocabGrid" class="vocab-grid" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Facts / progress -->
+      <aside class="stack">
+        <!-- SRS timeline -->
+        <div class="card">
+          <h2>Progress</h2>
+          <div class="timeline" id="srsTimeline" style="margin-top:10px"></div>
+          <div class="separator"></div>
+          <div class="stack">
+            <div class="row"><span class="pill">Current stage</span><b id="stageNow">Apprentice 3</b></div>
+            <div class="row"><span class="pill">Next review</span><b id="nextReview">~ 3h 20m</b></div>
+            <div class="row"><span class="pill">Accuracy</span><b id="acc">94%</b></div>
+          </div>
+        </div>
+
+        <!-- Stroke order (placeholder block) -->
+        <div class="card">
+          <h2>Stroke order</h2>
+          <p class="muted" style="margin-top:6px">Upload stroke SVGs in your data layer to replace this preview.</p>
+          <div style="margin-top:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px">
+            <div class="panel" style="height:64px; display:grid; place-items:center">1</div>
+            <div class="panel" style="height:64px; display:grid; place-items:center">2</div>
+            <div class="panel" style="height:64px; display:grid; place-items:center">3</div>
+            <div class="panel" style="height:64px; display:grid; place-items:center">4</div>
+          </div>
+        </div>
+
+        <!-- Links & actions -->
+        <div class="card">
+          <h2>Actions</h2>
+          <div class="row" style="margin-top:10px; flex-wrap:wrap; gap:8px">
+            <a class="btn primary" href="reviews.html">Quick practice</a>
+            <a class="btn" href="lessons.html">Queue lessons</a>
+            <button id="copyLink" class="btn">Copy item link</button>
+            <button id="reportBtn" class="btn">Report issue</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div class="row" style="justify-content:space-between">
+      <span class="muted">© <span id="year"></span> Hanzi SRS</span>
+      <span class="muted">Tip: Toggle spoilers to train recall before reading mnemonics.</span>
+    </div>
+  </footer>
+
+  <script>
+    /* ---------------- Theme ---------------- */
+    const THEME_KEY='hanziSRS_theme';
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    function applyTheme(next){
+      localStorage.setItem(THEME_KEY, next);
+      document.documentElement.setAttribute('data-theme', next==='auto' ? (prefersDark?'dark':'light') : next);
+      document.getElementById('themeIcon').innerHTML =
+        (document.documentElement.getAttribute('data-theme')==='dark')
+          ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="2" fill="none"/>'
+          : '<path d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95 6.95-1.41-1.41M7.46 7.46 6.05 6.05m12.9 0-1.41 1.41M7.46 16.54l-1.41 1.41" stroke="currentColor" stroke-width="2" fill="none"/>';
+    }
+    function initTheme(){ applyTheme(localStorage.getItem(THEME_KEY) || 'auto') }
+    document.getElementById('themeBtn').addEventListener('click', ()=>{
+      const cur = document.documentElement.getAttribute('data-theme') || (prefersDark?'dark':'light');
+      applyTheme(cur==='dark' ? 'light' : 'dark');
+    });
+
+    /* ---------------- Demo data (replace with your API) ---------------- */
+    const DB = {
+      '学': {
+        char:'学', pinyin:'xué', meaning:'learn; study', level:3, frequency:'A',
+        srsStage:3, accuracy:94,
+        radicals:[
+          {char:'冖', name:'cover', id:'rad_mi'},
+          {char:'子', name:'child', id:'rad_zi'}
+        ],
+        meaningMnemonic:
+          'Under a roof (冖) the child (子) is learning — imagine a classroom where the roof keeps the noise out so the child can focus. That’s why 学 means to learn.',
+        readingMnemonic:
+          'Picture your favorite teacher shouting “SH-UEY!” (xué) as you master something new. The cheer locks the reading in.',
+        examples:[
+          {zh:'我在学校学习中文。', py:'Wǒ zài xuéxiào xuéxí zhōngwén.', en:'I study Chinese at school.'},
+          {zh:'学习需要耐心。', py:'Xuéxí xūyào nàixīn.', en:'Learning requires patience.'}
+        ],
+        vocab:[
+          {w:'学习', py:'xuéxí', en:'to study; learning', lvl:3},
+          {w:'学生', py:'xuéshēng', en:'student', lvl:3},
+          {w:'学校', py:'xuéxiào', en:'school', lvl:3},
+          {w:'大学', py:'dàxué', en:'university', lvl:6},
+          {w:'留学生', py:'liúxuéshēng', en:'international student', lvl:9}
+        ],
+        nextReviewSec: 3*3600 + 20*60
+      },
+      '汉': {
+        char:'汉', pinyin:'hàn', meaning:'Han; Chinese (language)', level:1, frequency:'A',
+        srsStage:5, accuracy:91,
+        radicals:[{char:'氵', name:'water'},{char:'又', name:'again'}],
+        meaningMnemonic:'Water 氵 and again 又 — like a river returning again and again: the enduring Han.',
+        readingMnemonic:'Think of “Han river”, you say “hàn”.',
+        examples:[{zh:'汉语很有意思。', py:'Hànyǔ hěn yǒu yìsi.', en:'Chinese is interesting.'}],
+        vocab:[{w:'汉语', py:'Hànyǔ', en:'Chinese (language)', lvl:1}],
+        nextReviewSec: 8*3600
+      }
+    };
+
+    /* ---------------- Helpers ---------------- */
+    function pad(n){return String(n).padStart(2,'0')}
+    function eta(sec){
+      if(!sec || sec<60){return sec ? `~ ${sec}s` : '~ 0m'}
+      const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60);
+      return `~ ${h?`${h}h `:''}${m}m`;
+    }
+    function srsInfo(stage){
+      // 1–4 Apprentice, 5–6 Guru, 7 Master, 8 Enlightened, 9 Burned
+      const map=[
+        null, 'Apprentice 1','Apprentice 2','Apprentice 3','Apprentice 4',
+        'Guru 1','Guru 2','Master','Enlightened','Burned'
+      ];
+      const pct = Math.min(100, Math.round((stage-1)/8*100));
+      const col = stage>=8 ? 'var(--ok)' : stage>=5 ? 'var(--accent-2)' : 'var(--warn)';
+      return {label: map[stage] || 'Unknown', pct, color:col};
+    }
+
+    /* ---------------- Rendering ---------------- */
+    const urlChar = new URLSearchParams(location.search).get('char') || '学';
+    const item = DB[urlChar] || DB['学'];
+
+    function $id(id){return document.getElementById(id)}
+    function fillBasics(){
+      $id('year').textContent = new Date().getFullYear();
+
+      $id('glyph').textContent=item.char;
+      $id('char').textContent=item.char;
+      $id('charInline').textContent=item.char;
+      $id('charInline2').textContent=item.char;
+      $id('pinyin').textContent=item.pinyin;
+      $id('meaning').textContent=item.meaning;
+      $id('level').textContent=item.level;
+      $id('freq').textContent=item.frequency;
+
+      $id('miniGlyph').textContent=item.char;
+      $id('miniTitle').textContent=item.char;
+      $id('miniPinyin').textContent=item.pinyin;
+
+      const si = srsInfo(item.srsStage);
+      $id('srsRing').style.setProperty('--pct', si.pct);
+      $id('srsRing').style.setProperty('--col', si.color);
+      $id('srsLabel').textContent = si.label;
+      $id('stageNow').textContent = si.label;
+      $id('nextReview').textContent = eta(item.nextReviewSec);
+      $id('acc').textContent = (item.accuracy||0) + '%';
+
+      // radicals
+      const rl=$id('radList'); rl.innerHTML='';
+      item.radicals.forEach(r=>{
+        const a=document.createElement('a'); a.className='chip'; a.href=`item.html?char=${encodeURIComponent(r.char)}`;
+        a.innerHTML=`<span class="r">${r.char}</span><span class="muted">${r.name}</span>`;
+        rl.appendChild(a);
+      });
+
+      // mnemonics
+      $id('meaningMemo').textContent=item.meaningMnemonic || '—';
+      $id('readingMemo').textContent=item.readingMnemonic || '—';
+
+      // examples
+      const ex=$id('examples'); ex.innerHTML='';
+      (item.examples||[]).forEach(e=>{
+        const div=document.createElement('div'); div.className='ex';
+        div.innerHTML=`<div class="zh">${e.zh}</div><div class="py">${e.py}</div><div>${e.en}</div>`;
+        ex.appendChild(div);
+      });
+
+      // vocab
+      const vg=$id('vocabGrid'); vg.innerHTML='';
+      (item.vocab||[]).forEach(v=>{
+        const card=document.createElement('div'); card.className='vocab';
+        card.innerHTML=`<div class="w">${v.w}</div><div class="py muted">${v.py}</div><div class="muted">${v.en}</div>
+                        <div style="margin-top:6px"><span class="badge">Level ${v.lvl}</span></div>`;
+        vg.appendChild(card);
+      });
+
+      // SRS timeline
+      const steps=['Apprentice 1','Apprentice 2','Apprentice 3','Apprentice 4','Guru 1','Guru 2','Master','Enlightened','Burned'];
+      const tl=$id('srsTimeline'); tl.innerHTML='';
+      steps.forEach((name,i)=>{
+        const s=document.createElement('div'); s.className='step'+(i+1===item.srsStage?' active':'');
+        s.innerHTML=`<span class="dot"></span><span class="muted">${name}</span>`;
+        tl.appendChild(s);
+      });
+    }
+
+    /* ---------------- Interactions ---------------- */
+    function initSpoilers(){
+      const KEY='hanziSRS_spoiler_hide';
+      const stored = localStorage.getItem(KEY)==='1';
+      const sw=$id('spoilerSwitch'); sw.checked = stored;
+      for(const el of document.querySelectorAll('.spoiler')) el.dataset.hidden = stored ? 'true':'false';
+      sw.addEventListener('change',()=>{
+        localStorage.setItem(KEY, sw.checked?'1':'0');
+        document.querySelectorAll('.spoiler').forEach(el=> el.dataset.hidden = sw.checked ? 'true':'false');
+      });
+      document.querySelectorAll('.spoiler .toggle').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const host=btn.closest('.spoiler'); host.dataset.hidden = host.dataset.hidden==='true'?'false':'true';
+        });
+      });
+    }
+
+    function initStar(){
+      const KEY='hanziSRS_starred';
+      const set = new Set(JSON.parse(localStorage.getItem(KEY) || '[]'));
+      const btn=$id('starBtn');
+      const sync=()=>{ btn.textContent = set.has(item.char) ? '★ Starred' : '☆ Star'; };
+      sync();
+      btn.addEventListener('click', ()=>{
+        if(set.has(item.char)) set.delete(item.char); else set.add(item.char);
+        localStorage.setItem(KEY, JSON.stringify([...set]));
+        sync();
+      });
+    }
+
+    function initAudio(){
+      const btn=$id('audioBtn');
+      btn.addEventListener('click', ()=>{
+        // Simple speech synthesis as placeholder. Replace with real audio if available.
+        if('speechSynthesis' in window){
+          const utter = new SpeechSynthesisUtterance(item.pinyin);
+          utter.lang = 'zh-CN';
+          speechSynthesis.speak(utter);
+        }else{
+          alert('Audio not available on this device (demo).');
+        }
+      });
+    }
+
+    function initCopy(){
+      $id('copyLink').addEventListener('click', async ()=>{
+        try{
+          await navigator.clipboard.writeText(location.href);
+          $id('copyLink').textContent='Copied!';
+          setTimeout(()=>{$id('copyLink').textContent='Copy item link'},1200);
+        }catch(e){ alert('Copy failed'); }
+      });
+      $id('reportBtn').addEventListener('click', ()=> alert('Thanks! Report submitted (demo).'));
+    }
+
+    /* ---------------- Init ---------------- */
+    function init(){
+      initTheme();
+      fillBasics();
+      initSpoilers();
+      initStar();
+      initAudio();
+      initCopy();
+    }
+    init();
+  </script>
+</body>
+</html>

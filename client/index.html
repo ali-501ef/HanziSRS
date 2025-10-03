@@ -581,12 +581,8 @@
       for(let from=1; from<=maxLevel; from+=groupSize){
         const to=Math.min(from+groupSize-1, maxLevel);
         const a=document.createElement('a'); a.className='chip';
-        if(area === 'hanzi'){
-          a.href=`/hanzi/${from}-${to}/`;
-        }else{
-          a.href=`levels.html?area=${encodeURIComponent(area)}&from=${from}&to=${to}`;
-        }
-        a.textContent=`${from}–${to}`;
+        a.href=`levels.html?area=${encodeURIComponent(area)}&from=${from}&to=${to}`;
+        a.textContent=`${from}–${to}`; // arrow removed per request
         container.appendChild(a);
       }
     }
