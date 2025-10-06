@@ -51,6 +51,18 @@ function build() {
   if (fs.existsSync(indexPath)) {
     fs.copyFileSync(indexPath, path.join(distDir, 'index.html'));
   }
+
+  // Copy additional standalone pages from client/ into dist/ so they can be served directly
+  // This allows anchors in the dashboard to navigate to reviews.html and lessons.html when
+  // deployed on a static host (e.g. Replit). Without this step, those pages would be
+  // missing from dist/ and the server would return index.html instead. See issue reported by users.
+  const extraPages = ['reviews.html', 'lessons.html'];
+  extraPages.forEach(page => {
+    const srcPath = path.join(__dirname, 'client', page);
+    if (fs.existsSync(srcPath)) {
+      fs.copyFileSync(srcPath, path.join(distDir, page));
+    }
+  });
   
   const listTemplate = fs.readFileSync(path.join(__dirname, 'templates/list.html'), 'utf-8');
   const itemTemplate = fs.readFileSync(path.join(__dirname, 'templates/item.html'), 'utf-8');
