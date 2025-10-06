@@ -259,8 +259,8 @@
         </div>
       </div>
       <div class="actions" style="margin-top:14px">
-        <!-- The reviews button should link directly to the reviews page. When clicked it will navigate to reviews.html -->
-        <a href="reviews.html" class="action-card action-rev" aria-label="Start reviews">
+        <!-- The reviews button should link directly to the reviews page. Use an explicit onclick handler to force a full page navigation and avoid any SPA routing conflicts. -->
+        <a href="reviews.html" onclick="window.location.href='reviews.html'" class="action-card action-rev" aria-label="Start reviews">
           <div class="stack">
             <span class="label">Reviews</span>
             <span class="sub">Due now</span>
@@ -273,8 +273,8 @@
           <div class="pulse" aria-hidden="true"></div>
         </a>
 
-        <!-- The lessons button should link directly to the lessons page. When clicked it will navigate to lessons.html -->
-        <a href="lessons.html" class="action-card action-les" aria-label="Start lessons">
+        <!-- The lessons button should link directly to the lessons page. Use an explicit onclick handler to force a full page navigation and avoid any SPA routing conflicts. -->
+        <a href="lessons.html" onclick="window.location.href='lessons.html'" class="action-card action-les" aria-label="Start lessons">
           <div class="stack">
             <span class="label">New lessons</span>
             <span class="sub">Available</span>
