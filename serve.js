@@ -16,11 +16,22 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // works regardless of whether the project has been built. Additionally,
 // support routes without the .html extension (e.g. '/reviews' or '/lessons')
 // by mapping them to the appropriate HTML file.
+// Define all standalone pages that should bypass the SPA fallback. Each route
+// supports both with and without the .html extension. When a request
+// matches one of these routes we serve the corresponding HTML file
+// directly from dist/ or client/ if it exists. This list must be kept
+// up to date with any new top‑level pages added to the client.
 const standaloneRoutes = [
   { path: '/reviews', file: 'reviews.html' },
   { path: '/reviews.html', file: 'reviews.html' },
   { path: '/lessons', file: 'lessons.html' },
   { path: '/lessons.html', file: 'lessons.html' },
+  { path: '/login', file: 'login.html' },
+  { path: '/login.html', file: 'login.html' },
+  { path: '/signup', file: 'signup.html' },
+  { path: '/signup.html', file: 'signup.html' },
+  { path: '/logout', file: 'logout.html' },
+  { path: '/logout.html', file: 'logout.html' },
 ];
 
 standaloneRoutes.forEach(({ path: routePath, file }) => {

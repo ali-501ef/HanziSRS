@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Logging out…</title>
+  <meta http-equiv="refresh" content="0; url=login.html" />
+  <script>
+    // Immediately remove the login flag and redirect to the sign‑in page.
+    localStorage.removeItem('loggedIn');
+    // redirect in case meta refresh fails
+    window.location.replace('login.html');
+  </script>
+</head>
+<body>
+  <!-- This page exists solely to clear the loggedIn flag and
+       redirect. It uses both JS and a meta refresh for
+       compatibility with static hosting environments. -->
+</body>
+</html>

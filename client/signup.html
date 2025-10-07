@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Hanzi SRS — Sign up" />
+  <meta name="theme-color" content="#0b0f19" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <title>Hanzi SRS — Sign up</title>
+  <!--
+    A modern sign‑up page with a premium feel. It uses the same
+    design tokens as the rest of the site for continuity. When the
+    form is submitted we mark the user as logged in and redirect to
+    the dashboard. Extend this with proper validation and account
+    creation logic for a production app.
+  -->
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+    img,svg,video,canvas,audio,iframe{display:block;max-width:100%}
+    input,button,textarea,select{font:inherit}
+    :root{color-scheme:dark light}
+    :root{
+      --bg:#0b0f19; --bg-2:#0e1423; --text:#e5e7eb; --muted:#98a2b3;
+      --surface:rgba(255,255,255,.04); --surface-2:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+      --accent:hsl(257 90% 66%); --accent-2:hsl(190 90% 60%);
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+      --radius:16px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{--bg:#ffffff; --bg-2:#f7f9fc; --text:#0b1220; --muted:#5b6573; --surface:rgba(0,0,0,.04); --surface-2:rgba(0,0,0,.06); --border:rgba(17,24,39,.12);
+      --shadow:0 10px 30px rgba(2,6,23,.08),0 2px 8px rgba(2,6,23,.06)}
+    }
+    html[data-theme="light"]{
+      --bg:#ffffff; --bg-2:#f7f9fc; --text:#0b1220; --muted:#5b6573; --surface:rgba(0,0,0,.04); --surface-2:rgba(0,0,0,.06); --border:rgba(17,24,39,.12);
+      --shadow:0 10px 30px rgba(2,6,23,.08),0 2px 8px rgba(2,6,23,.06)
+    }
+    html[data-theme="dark"]{
+      --bg:#0b0f19; --bg-2:#0e1423; --text:#e5e7eb; --muted:#98a2b3; --surface:rgba(255,255,255,.04); --surface-2:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2)
+    }
+    body{
+      min-height:100vh; background:var(--bg); color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue", Arial;
+      text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+      display:grid; place-items:center; padding:16px;
+    }
+    .bg-wrap{position:fixed; inset:0; z-index:-1; overflow:hidden;
+      background:
+        radial-gradient(1000px 420px at 85% -10%, color-mix(in oklab, var(--accent), transparent 70%), transparent 75%),
+        radial-gradient(900px 360px at 0% 0%, color-mix(in oklab, var(--accent-2), transparent 75%), transparent 75%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 40%, var(--bg) 100%);
+    }
+    .bg-grid{position:absolute; inset:-1px; background:
+      linear-gradient(transparent 97%, var(--border) 100%) 0 0 / 40px 40px,
+      linear-gradient(90deg, transparent 97%, var(--border) 100%) 0 0 / 40px 40px;
+      mask-image: radial-gradient(80% 60% at 50% 10%, #000 0%, #000 60%, transparent 85%); opacity:.25;
+    }
+    .card{
+      width:100%; max-width:460px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+    h1{font-size:1.6rem; font-weight:800; margin-bottom:20px; text-align:center}
+    .field{display:flex; flex-direction:column; gap:6px; margin-bottom:16px}
+    .field label{font-weight:600; font-size:.95rem}
+    .field input{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--bg-2);
+      color:var(--text);
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:100%; padding:12px 0;
+      border-radius:12px;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2));
+      color:#fff;
+      transition: transform .15s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn:active{transform:none}
+    .muted{color:var(--muted); font-size:.95rem; text-align:center}
+    .muted a{color:var(--accent); text-decoration:none; font-weight:600}
+    .muted a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="bg-wrap" aria-hidden="true"><div class="bg-grid"></div></div>
+  <main class="card" role="main">
+    <h1>Create your account</h1>
+    <form id="signupForm">
+      <div class="field">
+        <label for="signupName">Name</label>
+        <input id="signupName" type="text" required autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="signupEmail">Email</label>
+        <input id="signupEmail" type="email" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" type="password" required autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label for="signupConfirm">Confirm password</label>
+        <input id="signupConfirm" type="password" required autocomplete="new-password" />
+      </div>
+      <button type="submit" class="btn">Sign up</button>
+    </form>
+    <p class="muted" style="margin-top:16px">
+      Already have an account? <a href="login.html">Sign in</a>
+    </p>
+  </main>
+  <script>
+    // If already logged in, skip sign up
+    if (localStorage.getItem('loggedIn')) {
+      window.location.href = 'dashboard.html';
+    }
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Basic client‑side check for matching passwords
+      const pw = document.getElementById('signupPassword').value.trim();
+      const conf = document.getElementById('signupConfirm').value.trim();
+      if (pw !== conf) {
+        alert('Passwords do not match');
+        return;
+      }
+      // In a real app, you would send the user info to a backend and
+      // handle errors. For this demo we simply set the logged in flag.
+      localStorage.setItem('loggedIn', 'true');
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

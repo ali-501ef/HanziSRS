@@ -259,7 +259,8 @@
         </div>
       </div>
       <div class="actions" style="margin-top:14px">
-        <a href="reviews.html" class="action-card action-rev" aria-label="Start reviews">
+        <!-- The reviews button should link directly to the reviews page. Use an explicit onclick handler to force a full page navigation and avoid any SPA routing conflicts. -->
+        <a href="reviews.html" onclick="window.location.href='reviews.html'" class="action-card action-rev" aria-label="Start reviews">
           <div class="stack">
             <span class="label">Reviews</span>
             <span class="sub">Due now</span>
@@ -272,7 +273,8 @@
           <div class="pulse" aria-hidden="true"></div>
         </a>
 
-        <a href="lessons.html" class="action-card action-les" aria-label="Start lessons">
+        <!-- The lessons button should link directly to the lessons page. Use an explicit onclick handler to force a full page navigation and avoid any SPA routing conflicts. -->
+        <a href="lessons.html" onclick="window.location.href='lessons.html'" class="action-card action-les" aria-label="Start lessons">
           <div class="stack">
             <span class="label">New lessons</span>
             <span class="sub">Available</span>
@@ -316,6 +318,7 @@
         <div class="card">
           <h2>Quick links</h2>
           <div class="row" style="margin-top:8px">
+            <!-- Ensure the quick link buttons navigate to the correct pages when clicked -->
             <a class="btn" href="reviews.html">Start reviews</a>
             <a class="btn" href="lessons.html">Start lessons</a>
             <a class="btn" href="#" id="btnManage">Manage decks</a>

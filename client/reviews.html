@@ -1,1233 +1,1056 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="Hanzi SRS — Premium, intuitive review session for Chinese characters with tone‑aware input, examples, and context." />
-  <meta name="theme-color" content="#0b0f19" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="Hanzi SRS — Premium Review Experience" />
+  <meta name="theme-color" content="#0a0e17" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <title>Hanzi SRS — Reviews</title>
+  <title>Reviews | Hanzi SRS</title>
 
   <style>
-    /* ---------- Reset & tokens (consistent theme) ---------- */
+    /* ---------- Reset & Premium Tokens ---------- */
     *,*::before,*::after{box-sizing:border-box}
     body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
-    img,svg,video,canvas,audio,iframe{display:block;max-width:100%}
+    img,svg,video,canvas{display:block;max-width:100%}
     input,button,textarea,select{font:inherit}
     :root{color-scheme:dark light}
     :root{
-      --bg:#0b0f19; --bg-2:#0e1423; --text:#e5e7eb; --muted:#98a2b3;
-      --surface:rgba(255,255,255,.04); --surface-2:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
-      --accent:hsl(257 90% 66%); --accent-2:hsl(190 90% 60%); --success:#22c55e; --warn:#f59e0b; --danger:#ef4444;
-      --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
-      --radius:16px; --container:1200px; --gap:24px;
+      /* Premium dark theme */
+      --bg:#0a0e17; --bg-2:#0e1321; --text:#f0f2f5; --muted:#94a3b8;
+      --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.08); --border:rgba(255,255,255,.15);
+      --accent:hsl(257 90% 66%); --accent-2:hsl(190 90% 60%); --success:#10b981; --warn:#f59e0b; --danger:#ef4444;
+      --shadow:0 20px 40px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.25);
+      --glow:0 0 40px color-mix(in oklab, var(--accent), transparent 80%);
+
+      --container:1200px; --radius:20px; --gap:24px;
+      --navH:72px;
     }
     @media (prefers-color-scheme: light){
-      :root{--bg:#fff; --bg-2:#f7f9fc; --text:#0b1220; --muted:#5b6573; --surface:rgba(0,0,0,.04); --surface-2:rgba(0,0,0,.06); --border:rgba(17,24,39,.12);
-      --shadow:0 10px 30px rgba(2,6,23,.08),0 2px 8px rgba(2,6,23,.06)}
+      :root{
+        --bg:#ffffff; --bg-2:#f8fafc; --text:#0f172a; --muted:#64748b;
+        --surface:#ffffff; --surface-2:#f1f5f9; --border:#e2e8f0;
+        --shadow:0 20px 40px rgba(2,6,23,.08), 0 4px 12px rgba(2,6,23,.04);
+      }
     }
+    html[data-theme="light"]{
+      --bg:#ffffff; --bg-2:#f8fafc; --text:#0f172a; --muted:#64748b;
+      --surface:#ffffff; --surface-2:#f1f5f9; --border:#e2e8f0;
+      --shadow:0 20px 40px rgba(2,6,23,.08), 0 4px 12px rgba(2,6,23,.04);
+    }
+    html[data-theme="dark"]{
+      --bg:#0a0e17; --bg-2:#0e1321; --text:#f0f2f5; --muted:#94a3b8;
+      --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.08); --border:rgba(255,255,255,.15);
+    }
+
     body{
       min-height:100vh; background:var(--bg); color:var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue", Arial;
-      text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; line-height:1.5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; line-height:1.6;
     }
+
+    /* ---------- Premium Background ---------- */
     .bg-wrap{position:fixed; inset:0; z-index:-1; overflow:hidden;
       background:
-        radial-gradient(1200px 500px at 85% -10%, color-mix(in oklab, var(--accent), transparent 70%), transparent 75%),
-        radial-gradient(1000px 400px at 0% 0%, color-mix(in oklab, var(--accent-2), transparent 75%), transparent 75%),
+        radial-gradient(1400px 600px at 90% -5%, color-mix(in oklab, var(--accent), transparent 65%), transparent 80%),
+        radial-gradient(1100px 450px at 5% 10%, color-mix(in oklab, var(--accent-2), transparent 70%), transparent 80%),
         linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 40%, var(--bg) 100%);
     }
     .bg-grid{position:absolute; inset:-1px;
       background:
-        linear-gradient(transparent 97%, var(--border) 100%) 0 0 / 40px 40px,
-        linear-gradient(90deg, transparent 97%, var(--border) 100%) 0 0 / 40px 40px;
-      mask-image: radial-gradient(80% 60% at 50% 10%, #000 0%, #000 60%, transparent 85%); opacity:.35;
+        linear-gradient(transparent 97%, var(--border) 100%) 0 0 / 60px 60px,
+        linear-gradient(90deg, transparent 97%, var(--border) 100%) 0 0 / 60px 60px;
+      mask-image: radial-gradient(90% 70% at 50% 10%, #000 0%, #000 60%, transparent 90%); opacity:.15;
     }
 
-    .container{max-width:var(--container); margin-inline:auto; padding-inline: clamp(16px, 3vw, 32px)}
+    .container{max-width:var(--container); margin-inline:auto; padding-inline: clamp(20px, 4vw, 40px)}
     .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-    .stack{display:flex; flex-direction:column; gap:10px}
+    .stack{display:flex; flex-direction:column; gap:12px}
     .grid{display:grid; gap:var(--gap)}
-    .grid-2{grid-template-columns:1.15fr .85fr}
-    @media (max-width: 980px){ .grid-2{grid-template-columns:1fr} }
 
-    /* ---------- Nav ---------- */
-    .nav{position:sticky; top:0; z-index:50; backdrop-filter: blur(12px);
-      background: color-mix(in oklab, var(--bg), transparent 60%); border-bottom:1px solid var(--border)}
-    .nav-inner{height:64px; display:flex; align-items:center; justify-content:space-between}
-    .brand{display:flex; gap:10px; align-items:center; color:inherit; text-decoration:none; font-weight:800}
-    .brand-badge{width:32px; height:32px; display:grid; place-items:center; border-radius:10px; color:white;
+    /* ---------- Premium Navigation ---------- */
+    .nav{position:sticky; top:0; z-index:100; backdrop-filter: blur(20px);
+      background: color-mix(in oklab, var(--bg), transparent 70%); border-bottom:1px solid var(--border)}
+    .nav-inner{height:var(--navH); display:flex; align-items:center; justify-content:space-between}
+    .brand{display:flex; gap:12px; align-items:center; color:inherit; text-decoration:none; font-weight:800}
+    .brand-badge{width:36px; height:36px; display:grid; place-items:center; border-radius:12px; color:#fff;
       background:linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow:var(--shadow)}
-    .mini-badge{font-size:.75rem; padding:4px 8px; border:1px solid var(--border); border-radius:999px; color:var(--muted)}
 
-    /* ---------- Header bar ---------- */
-    .bar{margin:16px 0 8px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--shadow)}
-    .progress{position:relative; height:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; overflow:hidden; width:min(460px, 60vw)}
-    .progress > span{position:absolute; inset:0; transform-origin:left; transform:scaleX(0);
-      background:linear-gradient(90deg, var(--accent), var(--accent-2))}
-    .pill{padding:6px 10px; border:1px solid var(--border); border-radius:999px}
-    .kbd{font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em; border:1px solid var(--border); padding:.12em .5em; border-radius:6px; background:var(--surface)}
-
-    /* ---------- Buttons ---------- */
+    /* ---------- Premium Buttons with Refined Micro-interactions ---------- */
     .btn{
       display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); background:var(--surface);
-      padding:12px 16px; border-radius:12px; color:var(--text); text-decoration:none; cursor:pointer;
-      transition: transform .15s ease, filter .15s ease;
-      font-weight:600;
+      padding:12px 18px; border-radius:14px; color:var(--text); text-decoration:none; cursor:pointer;
+      font-weight:600; transition: all 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+      position: relative;
+      overflow: hidden;
     }
-    .btn.primary{border:none; color:white; background:linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow:var(--shadow)}
-    .btn.ghost{background:transparent}
-    .btn.icon{width:44px; height:44px; display:grid; place-items:center; padding:0}
-    .btn:hover{transform:translateY(-1px)}
-    .btn:active{transform:none}
-    .danger{color:var(--danger)}
-    .success{color:var(--success)}
+    .btn:hover {
+      border-color: color-mix(in oklab, var(--border), transparent 30%);
+      background: var(--surface-2);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .btn:active {
+      transform: translateY(0);
+      transition: transform 0.1s ease;
+    }
+    .btn.primary{
+      color:#fff; border:none; background:linear-gradient(135deg, var(--accent), var(--accent-2)); 
+      box-shadow:var(--shadow), var(--glow);
+    }
+    .btn.primary:hover {
+      filter: brightness(1.08) saturate(1.1);
+      box-shadow: 0 10px 30px color-mix(in oklab, var(--accent), transparent 70%), 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn.icon{width:48px; height:48px; display:grid; place-items:center; padding:0}
+    .pill{padding:8px 14px; border:1px solid var(--border); border-radius:999px; font-size:0.9rem}
     .muted{color:var(--muted)}
-    h1{font-size:clamp(1.35rem,2.6vw,1.7rem); line-height:1.1; font-weight:800}
 
-    /* ---------- Main panels ---------- */
-    .panel{
-      background: linear-gradient(180deg, var(--surface-2), transparent);
-      border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px;
+    /* ---------- Premium Header ---------- */
+    .header{margin:24px 0 16px}
+    .header-content{
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); 
+      padding:20px 24px; box-shadow:var(--shadow); 
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      position: relative;
     }
-    .hanzi-card{display:grid; gap:14px; align-content:start; min-height:560px}
-    .topline{display:flex; align-items:center; justify-content:space-between}
-    .srs-badge{font-size:.85rem; padding:4px 10px; border:1px solid var(--border); border-radius:999px}
-    .hanzi{
-      text-align:center; font-weight:900; font-size: clamp(90px, 16vw, 180px); line-height:1; letter-spacing:-.02em;
-      text-shadow: 0 10px 60px color-mix(in oklab, var(--accent), transparent 65%);
-      margin-top:2px;
+    .session-title{font-size:1.5rem; font-weight:800; display:flex; align-items:center; gap:12px}
+
+    /* Centered Progress Section */
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      justify-self: center;
+      width: 100%;
+      max-width: 400px;
     }
-    .prompt{display:flex; align-items:center; justify-content:center; gap:10px}
-    .prompt .mode{padding:4px 10px; border:1px solid var(--border); border-radius:999px; font-size:.85rem}
+    .progress-container{display:flex; align-items:center; gap:16px; width: 100%}
+    .progress-bar{flex:1; height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden}
+    .progress-fill{height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius:999px; transition:width 0.5s ease}
+    .stats{display:flex; gap:20px; justify-self: end;}
+    .stat{display:flex; flex-direction:column; gap:4px; text-align:center}
+    .stat-value{font-weight:800; font-size:1.1rem}
+    .stat-label{font-size:0.85rem; color:var(--muted)}
 
-    .input-row{display:flex; gap:12px; flex-wrap:wrap; align-items:stretch}
-    .input{
-      flex:1; display:flex; align-items:center; gap:10px; background:var(--bg-2); border:1px solid var(--border);
-      padding:14px 16px; border-radius:12px;
+    /* ---------- Premium Review Card ---------- */
+    .review-card{
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); 
+      padding:32px; box-shadow:var(--shadow); margin-bottom:24px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .input input{flex:1; background:transparent; color:var(--text); border:none; outline:none; font-size:1.05rem}
-    .input.good{box-shadow: 0 0 0 2px color-mix(in oklab, var(--success), transparent 60%) inset}
-    .input.bad{animation: shake .25s linear 0s 1}
-    @keyframes shake{25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}100%{transform:none}}
+    .review-card:hover {
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25), 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .card-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
+    .item-badge{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:999px; 
+      font-weight:700; font-size:0.9rem; transition: all 0.3s ease;
+    }
+    .item-badge.radical{background:linear-gradient(135deg, #8b5cf6, #a855f7); color:white}
+    .item-badge.kanji{background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:white}
+    .item-badge.vocabulary{background:linear-gradient(135deg, #10b981, #059669); color:white}
+    .item-meta{display:flex; gap:12px}
+    .meta-item{display:flex; align-items:center; gap:6px; font-size:0.9rem; color:var(--muted); transition: color 0.3s ease}
+    .meta-item:hover {color: var(--text);}
 
-    .result{display:none; border:1px solid var(--border); border-radius:12px; padding:12px; background:var(--surface)}
-    .result.show{display:block}
-    .result.ok{border-color: color-mix(in oklab, var(--success), transparent 40%)}
-    .result.bad{border-color: color-mix(in oklab, var(--danger), transparent 40%)}
+    /* Character Display */
+    .character-display{text-align:center; margin:32px 0; position: relative;}
+    .character{
+      font-size: clamp(120px, 20vw, 200px); font-weight:900; line-height:1; 
+      text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      margin-bottom:16px;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .character-subtitle{font-size:1.2rem; color:var(--muted); margin-top:12px; transition: color 0.3s ease}
+    .character-subtitle:hover {color: var(--text);}
 
-    .controls{display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between}
-    .left-controls,.right-controls{display:flex; flex-wrap:wrap; gap:10px}
+    /* Question & Input */
+    .question-section{margin:32px 0; text-align:center}
+    .question{font-size:1.4rem; font-weight:700; margin-bottom:16px}
+    .question-hint{color:var(--muted); font-size:1rem; margin-top:8px; transition: color 0.3s ease}
+    .question-hint:hover {color: var(--text);}
 
-    /* ---------- Context drawer (off by default) ---------- */
-    .drawer{display:none; border:1px solid var(--border); border-radius:14px; background:var(--surface); padding:12px}
-    .drawer.open{display:block}
-    .ctx-grid{display:grid; gap:10px}
-    .ctx-card{border:1px solid var(--border); border-radius:12px; padding:10px; background:var(--bg-2)}
-    .ctx-pin{font-style:italic; color:var(--muted)}
-
-    /* ---------- Right panel: tabs & info ---------- */
-    .tabs{display:flex; gap:8px; border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:8px; flex-wrap:wrap}
-    .tab{padding:10px 14px; border-radius:12px; border:1px solid transparent; cursor:pointer; font-weight:600}
-    .tab[aria-selected="true"]{border-color:var(--border); background:var(--surface)}
-    .tabpanel{display:none}
-    .tabpanel.active{display:block}
-    .kv{display:grid; grid-template-columns:140px 1fr; gap:10px 16px; align-items:start}
-    @media (max-width: 520px){ .kv{grid-template-columns:1fr} }
-    .tianzi{position:relative; width:240px; aspect-ratio:1/1; border:1px solid var(--border); background:var(--surface); border-radius:12px; overflow:hidden}
-    .tianzi::before, .tianzi::after{content:""; position:absolute; inset:0; background:
-      linear-gradient(transparent 49.3%, var(--border) 49.3% 50.7%, transparent 50.7%),
-      linear-gradient(90deg, transparent 49.3%, var(--border) 49.3% 50.7%, transparent 50.7%);
-      opacity:.55}
-    .stroke{position:absolute; height:3px; background:linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius:3px; transform-origin:left; opacity:.9}
-    .stroke.hidden{opacity:.07}
-    .stroke-num{position:absolute; font-size:.75rem; color:var(--muted)}
-
-    /* ---------- Toast & dialogs ---------- */
-    .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); z-index:60; padding:10px 14px; border-radius:10px; background:var(--surface); border:1px solid var(--border)}
-    dialog{border:none; border-radius:16px; padding:0; background:linear-gradient(180deg, var(--surface-2), transparent); box-shadow:var(--shadow); color:var(--text)}
-    dialog::backdrop{background:rgba(0,0,0,.5)}
-    .modal{padding:18px}
-
-    /* ---------- Summary dialog ---------- */
-    .sum-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .ring{--pct:0; width:120px; height:120px; border-radius:50%; background:conic-gradient(var(--success) calc(var(--pct)*1%), var(--surface-2) 0); display:grid; place-items:center}
-    .ring span{background:var(--bg); border:1px solid var(--border); border-radius:50%; width:82px; height:82px; display:grid; place-items:center; font-weight:800}
-    .sum-grid{display:grid; gap:12px; grid-template-columns: 1fr 1fr}
-    @media (max-width: 720px){ .sum-grid{grid-template-columns:1fr} }
-    .list{display:grid; gap:8px; max-height:38vh; overflow:auto}
-    .list-item{display:flex; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px}
-    .confetti{position:absolute; inset:0; pointer-events:none; overflow:hidden}
-    .f{position:absolute; width:8px; height:14px; opacity:.9; transform:translateY(-20px); animation: fall 1200ms ease-in forwards}
-    @keyframes fall{
-      0%{transform:translateY(-20px) rotate(0)}
-      100%{transform:translateY(140%) rotate(540deg)}
+    .input-container{
+      display:flex; gap:16px; max-width:500px; margin:0 auto 24px;
+      transition: all 0.3s ease;
+    }
+    .answer-input{
+      flex:1; padding:16px 20px; border:2px solid var(--border); border-radius:16px; 
+      background:var(--bg-2); color:var(--text); font-size:1.1rem; transition:all 0.3s ease;
+    }
+    .answer-input:focus{
+      outline:none; border-color:var(--accent); 
+      box-shadow:0 0 0 3px color-mix(in oklab, var(--accent), transparent 80%);
+      transform: translateY(-2px);
+    }
+    .answer-input.correct{
+      border-color:var(--success); 
+      box-shadow:0 0 0 3px color-mix(in oklab, var(--success), transparent 80%);
+    }
+    .answer-input.incorrect{
+      border-color:var(--danger); 
+      box-shadow:0 0 0 3px color-mix(in oklab, var(--danger), transparent 80%);
     }
 
-    /* ---------- Settings sheet ---------- */
-    .sheet{position:fixed; top:0; right:0; width:min(420px, 100vw); height:100%; background:color-mix(in oklab, var(--bg), transparent 15%); backdrop-filter:blur(10px); border-left:1px solid var(--border); padding:16px; box-shadow:var(--shadow); transform:translateX(100%); transition: transform .25s ease; z-index:55}
-    .sheet.open{transform:none}
-    .toggle{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 12px; border:1px solid var(--border); border-radius:12px}
+    /* Result Display */
+    .result-container{
+      padding:20px; border-radius:16px; margin-top:24px; display:none;
+      background:var(--surface-2); border:1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .result-container.show{
+      display:block;
+      animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .result-container.correct{border-color:color-mix(in oklab, var(--success), transparent 60%)}
+    .result-container.incorrect{border-color:color-mix(in oklab, var(--danger), transparent 60%)}
+    .result-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px}
+    .result-title{font-weight:800; font-size:1.2rem; transition: all 0.3s ease}
+    .result-title.correct{color:var(--success)}
+    .result-title.incorrect{color:var(--danger)}
+    .result-details{color:var(--muted); transition: color 0.3s ease}
+    .result-details:hover {color: var(--text);}
+    .result-actions{display:flex; gap:12px; margin-top:16px}
 
-    /* ---------- Reduced motion ---------- */
-    @media (prefers-reduced-motion: reduce){ .btn{transition:none} .input.bad{animation:none} }
+    /* Controls */
+    .controls{display:flex; justify-content:space-between; align-items:center; margin-top:32px}
+    .control-group{display:flex; gap:12px}
+    .shortcut-hint{display:flex; gap:8px; align-items:center; color:var(--muted); font-size:0.9rem}
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; 
+      font-size:0.8rem; border:1px solid var(--border); padding:4px 8px; 
+      border-radius:6px; background:var(--surface-2);
+      transition: all 0.2s ease;
+    }
+    .kbd:hover {
+      background: var(--surface);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- Context Panel ---------- */
+    .context-panel{
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); 
+      padding:24px; box-shadow:var(--shadow); margin-top:24px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .panel-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px}
+    .panel-title{font-size:1.2rem; font-weight:700}
+    .panel-tabs{display:flex; gap:8px; border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:20px}
+    .panel-tab{
+      padding:10px 16px; border-radius:10px; border:1px solid transparent; cursor:pointer; 
+      font-weight:600; transition:all 0.3s ease;
+    }
+    .panel-tab:hover {
+      background: var(--surface-2);
+      border-color: var(--border);
+    }
+    .panel-tab.active{
+      background:var(--surface-2); border-color:var(--border);
+      transform: translateY(-2px);
+    }
+    .panel-content{display:none; transition: all 0.3s ease;}
+    .panel-content.active{
+      display:block;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Examples */
+    .example-list{display:grid; gap:16px}
+    .example{
+      padding:16px; border:1px solid var(--border); border-radius:12px; 
+      background:var(--bg-2); transition:all 0.3s ease;
+    }
+    .example:hover{
+      transform:translateY(-3px); 
+      box-shadow:0 10px 25px rgba(0,0,0,0.1);
+      border-color: color-mix(in oklab, var(--border), transparent 40%);
+    }
+    .example-hanzi{font-size:1.2rem; font-weight:700; margin-bottom:8px}
+    .example-pinyin{color:var(--muted); margin-bottom:8px; transition: color 0.3s ease}
+    .example-pinyin:hover {color: var(--text);}
+    .example-translation{color:var(--text)}
+
+    /* Mnemonics */
+    .mnemonic-section{margin-bottom:24px; transition: all 0.3s ease;}
+    .mnemonic-section:hover {
+      transform: translateX(5px);
+    }
+    .mnemonic-title{font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px}
+    .mnemonic-content{color:var(--muted); line-height:1.6; transition: color 0.3s ease}
+    .mnemonic-content:hover {color: var(--text);}
+
+    /* Stroke Order */
+    .stroke-container{display:grid; grid-template-columns:repeat(auto-fit, minmax(80px, 1fr)); gap:12px; margin-top:16px}
+    .stroke-box{
+      aspect-ratio:1; display:grid; place-items:center; background:var(--surface-2); 
+      border-radius:12px; border:1px solid var(--border); font-weight:700; position:relative;
+      transition: all 0.3s ease;
+    }
+    .stroke-box:hover {
+      transform: scale(1.05);
+      border-color: var(--accent);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .stroke-number{
+      position:absolute; top:6px; left:6px; font-size:0.8rem; color:var(--muted);
+    }
+
+    /* ---------- Premium Footer ---------- */
+    footer{
+      border-top:1px solid var(--border); margin-top:40px; padding:32px 0; 
+      color:var(--muted); text-align:center;
+    }
+
+    /* ---------- Animations ---------- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .fade-in { animation: fadeIn 0.3s ease; }
+    .pulse { animation: pulse 0.5s ease; }
+    .shake { animation: shake 0.3s ease; }
+
+    /* ---------- Responsive Design ---------- */
+    @media (max-width: 768px) {
+      .header-content{
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .progress-section {
+        order: 2;
+      }
+      .stats {
+        order: 3;
+        justify-self: center;
+      }
+      .progress-container{max-width:100%}
+      .stats{width:100%; justify-content:space-between}
+      .input-container{flex-direction:column}
+      .controls{flex-direction:column; gap:16px; align-items:flex-start}
+      .control-group{width:100%; justify-content:space-between}
+    }
   </style>
 </head>
 <body>
   <div class="bg-wrap" aria-hidden="true"><div class="bg-grid"></div></div>
 
-  <!-- NAV -->
+  <!-- Premium Navigation -->
   <nav class="nav" aria-label="Primary">
     <div class="container nav-inner">
-      <a class="brand" href="index.html" aria-label="Back to home">
+      <a class="brand" href="index.html" aria-label="Back to dashboard">
         <span class="brand-badge" aria-hidden="true">汉</span>
         <span>Hanzi SRS</span>
-        <span class="mini-badge">Reviews</span>
+        <span class="pill">Reviews</span>
       </a>
       <div class="row">
-        <button id="openHelp" class="btn icon" aria-label="Keyboard shortcuts (?)" title="Shortcuts (?)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 17h.01M9.09 9a3 3 0 1 1 5.83 1c0 2-3 2-3 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-        <button id="openSettings" class="btn icon" aria-label="Settings (S)" title="Settings (S)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm8 4a7.96 7.96 0 0 0-.34-2.29l2.11-1.54-2-3.46-2.46 1a8.03 8.03 0 0 0-3.95-2.3l-.37-2.6h-4l-.37 2.6a8.03 8.03 0 0 0-3.95 2.3l-2.46-1-2 3.46 2.11 1.54A8.1 8.1 0 0 0 4 12c0 .8.12 1.58.34 2.29l-2.11 1.54 2 3.46 2.46-1a8.03 8.03 0 0 0 3.95 2.3l.37 2.6h4l.37-2.6a8.03 8.03 0 0 0 3.95-2.3l2.46 1 2-3.46-2.11-1.54c.22-.71.34-1.49.34-2.29Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <a class="btn" href="index.html">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Dashboard
+        </a>
+        <a class="btn" href="lessons.html">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/>
+          </svg>
+          Lessons
+        </a>
+        <button id="themeBtn" class="btn icon" aria-label="Toggle theme">
+          <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95 6.95-1.41-1.41M7.46 7.46 6.05 6.05m12.9 0-1.41 1.41M7.46 16.54l-1.41 1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- HEADER -->
-  <header class="container">
-    <div class="bar">
-      <div class="row">
-        <h1 id="sessionTitle">Reviews</h1>
-        <div class="progress" role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <span id="progressFill"></span>
-        </div>
-        <span class="muted" id="progressText">0 / 0</span>
+  <!-- Premium Header -->
+  <header class="container header">
+    <div class="header-content">
+      <div class="session-title">
+        <span>Review Session</span>
+        <span class="pill">Active</span>
       </div>
-      <div class="row">
-        <span class="pill">Remaining: <strong id="remaining">—</strong></span>
-        <span class="pill">Accuracy: <strong id="accuracy">—</strong></span>
-        <span class="pill">Time: <strong id="elapsed">0:00</strong></span>
-        <button id="endBtn" class="btn danger" title="End session (E)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 19h12M6 5h12M6 5v14M18 5v14" stroke="currentColor" stroke-width="2"/></svg>
-          End
-        </button>
+
+      <!-- Centered Progress Section -->
+      <div class="progress-section">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 30%"></div>
+          </div>
+          <span class="muted" id="progressText">3/10</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value" id="accuracy">94%</span>
+          <span class="stat-label">Accuracy</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="streak">12</span>
+          <span class="stat-label">Day Streak</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="time">02:15</span>
+          <span class="stat-label">Time</span>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="container grid grid-2" style="margin-top:10px">
-    <!-- LEFT: Review card -->
-    <section class="panel hanzi-card" aria-live="polite">
-      <div class="topline">
+  <main class="container">
+    <!-- Premium Review Card -->
+    <section class="review-card fade-in" id="reviewCard">
+      <div class="card-header">
         <div class="row">
-          <span class="srs-badge" id="srsStage">Apprentice 1</span>
-          <span class="mini-badge" id="levelBadge">Level 1 · HSK 1</span>
-        </div>
-        <div class="row">
-          <label class="row" style="gap:8px; cursor:pointer">
-            <input id="ctxToggle" type="checkbox" style="accent-color:hsl(257 90% 66%)">
-            <span class="pill">Context</span>
-          </label>
-          <button id="audioBtn" class="btn icon" title="Play audio (A)" aria-label="Play audio">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M11 5 6 9H3v6h3l5 4V5Zm9 7a6 6 0 0 0-6-6v12a6 6 0 0 0 6-6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-          <button id="starBtn" class="btn icon" title="Star / mark leech (L)" aria-pressed="false" aria-label="Star">
-            <svg id="starIcon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m12 3 3.09 6.26L22 10.27l-5 4.9 1.18 6.86L12 18.9 5.82 22 7 15.17l-5-4.9 6.91-1.01L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="hanzi" id="char">汉</div>
-
-      <div class="prompt">
-        <span class="mode" id="modeBadge">Reading</span>
-        <span class="muted" id="subPrompt">Type the pinyin with tone marks or numbers. Press <span class="kbd">Enter</span> to submit.</span>
-      </div>
-
-      <!-- Reading input -->
-      <div id="readingRow" class="input-row">
-        <div id="readingBox" class="input" role="group" aria-label="Reading input">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 8v8m-4-6v4M4 8v8m4-10v12M2 19h20" stroke="currentColor" stroke-width="2"/></svg>
-          <input id="readingInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g., han4 or hàn" aria-label="Reading (pinyin)" />
-          <span id="tonePreview" class="muted" aria-hidden="true"></span>
-        </div>
-        <button id="readingSubmit" class="btn primary" title="Submit (Enter)">Submit</button>
-      </div>
-
-      <!-- Meaning input -->
-      <div id="meaningRow" class="input-row" style="display:none">
-        <div id="meaningBox" class="input" role="group" aria-label="Meaning input">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input id="meaningInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type the primary meaning" aria-label="Meaning" />
-        </div>
-        <button id="meaningSubmit" class="btn primary" title="Submit (Enter)">Submit</button>
-      </div>
-
-      <!-- Result banner (shows only after answer) -->
-      <div id="result" class="result" role="status" aria-live="polite">
-        <div class="row" style="justify-content:space-between">
-          <div class="stack">
-            <strong id="resTitle">Correct ✓</strong>
-            <div id="resDetail" class="muted">Nice! Move on.</div>
-          </div>
-          <div class="row">
-            <button id="viewInfoBtn" class="btn">View info</button>
-            <button id="acceptTypoBtn" class="btn" style="display:none">Accept as typo</button>
+          <span class="item-badge kanji" id="itemType">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Kanji
+          </span>
+          <div class="item-meta">
+            <span class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              Level 3
+            </span>
+            <span class="meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              Apprentice 2
+            </span>
           </div>
         </div>
+        <div class="row">
+          <button id="audioBtn" class="btn icon" title="Play audio">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+          <button id="starBtn" class="btn icon" title="Star item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m12 3 3.09 6.26L22 10.27l-5 4.9 1.18 6.86L12 18.9 5.82 22 7 15.17l-5-4.9 6.91-1.01L12 3Z"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <!-- Primary controls -->
+      <!-- Character Display -->
+      <div class="character-display">
+        <div class="character" id="character">学</div>
+        <div class="character-subtitle" id="characterSubtitle">Type the pinyin with tone marks</div>
+      </div>
+
+      <!-- Question & Input -->
+      <div class="question-section">
+        <div class="question" id="question">What is the reading of this character?</div>
+        <div class="question-hint" id="questionHint">Press Enter to submit your answer</div>
+
+        <div class="input-container">
+          <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer..." autocomplete="off">
+          <button class="btn primary" id="submitBtn">Submit</button>
+        </div>
+      </div>
+
+      <!-- Result Display -->
+      <div class="result-container" id="resultContainer">
+        <div class="result-header">
+          <div class="result-title correct" id="resultTitle">Correct!</div>
+          <button class="btn" id="nextBtn">Next</button>
+        </div>
+        <div class="result-details" id="resultDetails">
+          The reading is <strong>xué</strong>. Well done!
+        </div>
+        <div class="result-actions">
+          <button class="btn" id="showContextBtn">Show Context</button>
+          <button class="btn" id="showMnemonicsBtn">Show Mnemonics</button>
+        </div>
+      </div>
+
+      <!-- Controls -->
       <div class="controls">
-        <div class="left-controls">
-          <button id="hintBtn" class="btn" title="Hint (H)">Hint</button>
-          <button id="ignoreBtn" class="btn" title="Ignore once (I)">Ignore once</button>
-          <button id="undoBtn" class="btn" title="Undo last (Ctrl/⌘+Z)">Undo</button>
+        <div class="control-group">
+          <button class="btn" id="hintBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Hint
+          </button>
         </div>
-        <div class="right-controls">
-          <span class="pill">Require tones: <strong id="reqTonesBadge">On</strong></span>
-          <span class="pill">Shortcuts: <span class="kbd">Enter</span> · <span class="kbd">H</span> · <span class="kbd">I</span> · <span class="kbd">A</span> · <span class="kbd">?</span></span>
+        <div class="shortcut-hint">
+          <span>Shortcuts:</span>
+          <span class="kbd">Enter</span>
+          <span class="kbd">H</span>
+          <span class="kbd">A</span>
         </div>
-      </div>
-
-      <!-- Optional context (off by default) -->
-      <div id="contextDrawer" class="drawer">
-        <div class="row" style="justify-content:space-between; margin-bottom:6px">
-          <span class="muted">Context with the current item</span>
-          <button id="openExamplesTab" class="btn ghost">Open in Examples tab</button>
-        </div>
-        <div id="contextList" class="ctx-grid"></div>
       </div>
     </section>
 
-    <!-- RIGHT: Info panel -->
-    <aside class="panel" aria-label="Item information">
-      <nav class="tabs" role="tablist">
-        <button class="tab" role="tab" id="tabInfo" aria-selected="true" aria-controls="panelInfo">Info</button>
-        <button class="tab" role="tab" id="tabExamples" aria-selected="false" aria-controls="panelExamples">Examples</button>
-        <button class="tab" role="tab" id="tabMnemonic" aria-selected="false" aria-controls="panelMnemonic">Mnemonic</button>
-        <button class="tab" role="tab" id="tabProgress" aria-selected="false" aria-controls="panelProgress">Progress</button>
-      </nav>
+    <!-- Context Panel -->
+    <section class="context-panel" id="contextPanel" style="display: none;">
+      <div class="panel-header">
+        <div class="panel-title">Learning Resources</div>
+        <button class="btn icon" id="closeContextBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
 
-      <!-- INFO -->
-      <section id="panelInfo" class="tabpanel active" role="tabpanel" aria-labelledby="tabInfo">
-        <div class="kv" style="margin-top:6px">
-          <div class="muted">Character</div><div><strong id="infoChar">汉</strong> <span class="muted">(<span id="variantInfo">simplified</span>)</span></div>
-          <div class="muted">Reading</div><div id="infoReading">hàn</div>
-          <div class="muted">Meaning</div><div id="infoMeaning">Chinese (language); Han</div>
-          <div class="muted">Radicals</div><div id="infoRadicals">氵 water + 又 again</div>
-          <div class="muted">Decomposition</div><div id="infoDecomp">⺡ + 又 → 汉</div>
-        </div>
+      <div class="panel-tabs">
+        <div class="panel-tab active" data-tab="examples">Examples</div>
+        <div class="panel-tab" data-tab="mnemonics">Mnemonics</div>
+        <div class="panel-tab" data-tab="strokes">Stroke Order</div>
+        <div class="panel-tab" data-tab="details">Details</div>
+      </div>
 
-        <div style="margin-top:12px" class="stack">
-          <span class="mini-badge">Stroke order</span>
-          <div class="row" style="gap:16px; align-items:flex-start">
-            <div class="tianzi" id="strokeBox" aria-label="Stroke order diagram"></div>
-            <div class="stack">
-              <button id="strokePlay" class="btn">Animate</button>
-              <button id="strokeReset" class="btn">Reset</button>
-            </div>
+      <!-- Examples Tab -->
+      <div class="panel-content active" id="examplesTab">
+        <div class="example-list">
+          <div class="example">
+            <div class="example-hanzi">我在学校学习中文。</div>
+            <div class="example-pinyin">Wǒ zài xuéxiào xuéxí zhōngwén.</div>
+            <div class="example-translation">I study Chinese at school.</div>
+          </div>
+          <div class="example">
+            <div class="example-hanzi">学习需要耐心。</div>
+            <div class="example-pinyin">Xuéxí xūyào nàixīn.</div>
+            <div class="example-translation">Learning requires patience.</div>
+          </div>
+          <div class="example">
+            <div class="example-hanzi">他学得很快。</div>
+            <div class="example-pinyin">Tā xué dé hěn kuài.</div>
+            <div class="example-translation">He learns very quickly.</div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- EXAMPLES -->
-      <section id="panelExamples" class="tabpanel" role="tabpanel" aria-labelledby="tabExamples">
-        <div class="stack" style="margin-top:6px">
-          <div class="stack">
-            <span class="mini-badge">Words</span>
-            <div id="wordList" class="list"></div>
+      <!-- Mnemonics Tab -->
+      <div class="panel-content" id="mnemonicsTab">
+        <div class="mnemonic-section">
+          <div class="mnemonic-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            Meaning Mnemonic
           </div>
-          <div class="stack">
-            <span class="mini-badge">Sentences</span>
-            <div id="sentList" class="list"></div>
+          <div class="mnemonic-content">
+            Under a roof (冖) the child (子) is learning — imagine a classroom where the roof keeps the noise out so the child can focus. That's why 学 means to learn.
           </div>
         </div>
-      </section>
-
-      <!-- MNEMONIC -->
-      <section id="panelMnemonic" class="tabpanel" role="tabpanel" aria-labelledby="tabMnemonic">
-        <div class="stack" style="margin-top:6px">
-          <p class="muted" id="mnemonicText">氵 water flows to the Han lands — think “water + again” → “Han/Chinese”.</p>
-          <label class="muted" for="mnemonicInput">Your note</label>
-          <textarea id="mnemonicInput" rows="4" placeholder="Add your own mnemonic…" style="resize:vertical; background:var(--bg-2); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px"></textarea>
-          <div class="row"><button id="saveMnemonic" class="btn">Save</button><span id="mnemonicSaved" class="muted" aria-live="polite"></span></div>
-        </div>
-      </section>
-
-      <!-- PROGRESS -->
-      <section id="panelProgress" class="tabpanel" role="tabpanel" aria-labelledby="tabProgress">
-        <div class="stack" style="margin-top:6px">
-          <div class="kv">
-            <div class="muted">SRS Stage</div><div id="progStage">Apprentice 1</div>
-            <div class="muted">Next review</div><div id="progNext">—</div>
-            <div class="muted">Answered</div><div id="progAnswered">0</div>
-            <div class="muted">Accuracy</div><div id="progAcc">—</div>
+        <div class="mnemonic-section">
+          <div class="mnemonic-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 1v22M5 10v4a7 7 0 0 0 14 0v-4a7 7 0 0 0-14 0z"/>
+            </svg>
+            Reading Mnemonic
           </div>
-          <div class="stack" style="margin-top:8px">
-            <span class="mini-badge">Session history</span>
-            <div id="historyList" class="list"></div>
+          <div class="mnemonic-content">
+            Picture your favorite teacher shouting "SH-UEY!" (xué) as you master something new. The cheer locks the reading in.
           </div>
         </div>
-      </section>
-    </aside>
+      </div>
+
+      <!-- Stroke Order Tab -->
+      <div class="panel-content" id="strokesTab">
+        <div class="stroke-container">
+          <div class="stroke-box"><span class="stroke-number">1</span>丶</div>
+          <div class="stroke-box"><span class="stroke-number">2</span>丶</div>
+          <div class="stroke-box"><span class="stroke-number">3</span>丿</div>
+          <div class="stroke-box"><span class="stroke-number">4</span>丶</div>
+          <div class="stroke-box"><span class="stroke-number">5</span>𠃍</div>
+          <div class="stroke-box"><span class="stroke-number">6</span>一</div>
+          <div class="stroke-box"><span class="stroke-number">7</span>亅</div>
+          <div class="stroke-box"><span class="stroke-number">8</span>一</div>
+        </div>
+        <div class="row" style="margin-top: 20px; justify-content: center;">
+          <button class="btn" id="animateStrokesBtn">Animate</button>
+          <button class="btn" id="practiceWritingBtn">Practice Writing</button>
+        </div>
+      </div>
+
+      <!-- Details Tab -->
+      <div class="panel-content" id="detailsTab">
+        <div class="stack">
+          <div class="row">
+            <span class="muted">Character:</span>
+            <span><strong>学</strong> (simplified)</span>
+          </div>
+          <div class="row">
+            <span class="muted">Reading:</span>
+            <span><strong>xué</strong></span>
+          </div>
+          <div class="row">
+            <span class="muted">Meaning:</span>
+            <span><strong>learn; study</strong></span>
+          </div>
+          <div class="row">
+            <span class="muted">Radicals:</span>
+            <span>冖 (cover) + 子 (child)</span>
+          </div>
+          <div class="row">
+            <span class="muted">Components:</span>
+            <span>冖 + 子 → 学</span>
+          </div>
+          <div class="row">
+            <span class="muted">Level:</span>
+            <span>3 (HSK 1)</span>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- SETTINGS SHEET -->
-  <aside id="settingsSheet" class="sheet" aria-label="Settings" aria-hidden="true">
-    <div class="row" style="justify-content:space-between; margin-bottom:6px">
-      <h3>Settings</h3>
-      <button id="closeSettings" class="btn icon" aria-label="Close settings">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="stack">
-      <div class="toggle"><div><strong>Require tone correctness</strong><div class="muted">Reading must include correct tones</div></div>
-        <label><input id="setRequireTones" type="checkbox" checked> </label></div>
-      <div class="toggle"><div><strong>Auto‑convert 1–5 → tone marks</strong><div class="muted">Type numbers to add marks</div></div>
-        <label><input id="setAutoTones" type="checkbox" checked> </label></div>
-      <div class="toggle"><div><strong>Auto‑play audio</strong><div class="muted">Speak character on each card</div></div>
-        <label><input id="setAutoplayAudio" type="checkbox" checked> </label></div>
-      <div class="toggle"><div><strong>Auto show context after wrong answer</strong><div class="muted">Opens the context drawer when you miss</div></div>
-        <label><input id="setAutoContextOnWrong" type="checkbox"> </label></div>
-    </div>
-  </aside>
-
-  <!-- HELP / SHORTCUTS -->
-  <dialog id="helpModal">
-    <div class="modal">
-      <div class="row" style="justify-content:space-between">
-        <h3>Keyboard shortcuts</h3>
-        <form method="dialog"><button class="btn icon" aria-label="Close">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button></form>
-      </div>
-      <div class="stack" style="margin-top:10px">
-        <div class="list-item"><span>Submit</span><span class="kbd">Enter</span></div>
-        <div class="list-item"><span>Play audio</span><span class="kbd">A</span></div>
-        <div class="list-item"><span>Hint</span><span class="kbd">H</span></div>
-        <div class="list-item"><span>Ignore once</span><span class="kbd">I</span></div>
-        <div class="list-item"><span>Undo</span><span class="kbd">Ctrl/⌘ + Z</span></div>
-        <div class="list-item"><span>Settings</span><span class="kbd">S</span></div>
-        <div class="list-item"><span>Shortcuts</span><span class="kbd">?</span></div>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- SUMMARY MODAL (redesigned) -->
-  <dialog id="summaryModal">
-    <div class="modal" style="position:relative">
-      <div class="confetti" id="confetti"></div>
-      <div class="sum-head">
-        <h3>Session summary</h3>
-        <div class="ring" id="accRing" style="--pct:0"><span id="sumAcc">0%</span></div>
-      </div>
-      <div class="sum-grid" style="margin-top:12px">
-        <div class="panel" style="padding:12px">
-          <div class="stack">
-            <div class="row"><span class="pill">Items reviewed: <strong id="sumCount">0</strong></span></div>
-            <div class="row"><span class="pill">Reading accuracy: <strong id="sumReadAcc">—</strong></span></div>
-            <div class="row"><span class="pill">Meaning accuracy: <strong id="sumMeanAcc">—</strong></span></div>
-            <div class="row"><span class="pill">Time: <strong id="sumTime">—</strong></span></div>
-          </div>
-        </div>
-        <div class="panel" style="padding:12px">
-          <div class="stack">
-            <span class="mini-badge">Mistakes to revisit</span>
-            <div id="missList" class="list"></div>
-          </div>
-        </div>
-      </div>
-      <div class="row" style="justify-content:flex-end; margin-top:12px">
-        <button id="practiceMissBtn" class="btn">Practice mistakes</button>
-        <button id="finishBtn" class="btn primary">Finish</button>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- Toast -->
-  <div id="toast" class="toast" style="display:none"></div>
+  <footer class="container">
+    <div class="muted">© 2023 Hanzi SRS · Master Chinese characters through spaced repetition</div>
+  </footer>
 
   <script>
-    /* =========================
-       Demo data (add your API later)
-    ==========================*/
-    const deck = [
-      {
-        id: 1, char: '汉', simp:'汉', trad:'漢',
-        reading: 'hàn', meaning: ['Chinese','Han','Chinese (language)'],
-        components: '氵 water + 又 again', decomp: '⺡ + 又 → 汉', level: 1, hsk: 1,
-        words: [
-          {han:'汉语', pin:'Hànyǔ', mean:'Chinese language'},
-          {han:'汉字', pin:'hànzì', mean:'Chinese character'}
-        ],
-        sentences: [
-          {han:'我在学汉语。', pin:'Wǒ zài xué Hànyǔ.', en:'I’m learning Chinese.'},
-          {han:'这个汉字很常见。', pin:'Zhège hànzì hěn chángjiàn.', en:'This character is very common.'}
-        ],
-        mnemonic: '氵 water flows to the Han lands — water + again ⇒ Han/Chinese.',
-        strokes: [{x:20,y:60,w:60},{x:22,y:90,w:52},{x:22,y:120,w:40},{x:120,y:60,w:70},{x:110,y:92,w:90}]
-      },
-      {
-        id: 2, char: '字', simp:'字', trad:'字',
-        reading: 'zì', meaning: ['character','letter'],
-        components: '宀 roof + 子 child', decomp: '宀 + 子 → 字', level: 1, hsk: 1,
-        words: [
-          {han:'汉字', pin:'hànzì', mean:'Chinese character'},
-          {han:'写字', pin:'xiězì', mean:'to write characters'}
-        ],
-        sentences:[
-          {han:'我会写很多汉字。', pin:'Wǒ huì xiě hěn duō Hànzì.', en:'I can write many Chinese characters.'},
-          {han:'这个字怎么念？', pin:'Zhège zì zěnme niàn?', en:'How do you read this character?'}
-        ],
-        mnemonic:'A child (子) under a roof (宀) learning letters ⇒ “character”.',
-        strokes:[{x:30,y:50,w:140},{x:100,y:48,w:70,rot:90},{x:70,y:85,w:100},{x:80,y:120,w:90}]
-      },
-      {
-        id: 3, char: '学', simp:'学', trad:'學',
-        reading:'xué', meaning:['to learn','study'],
-        components:'⺍ small + 冖 cover + 子 child', decomp:'⺍ + 冖 + 子 → 学', level:1, hsk:1,
-        words:[{han:'学习', pin:'xuéxí', mean:'to study'}, {han:'学校', pin:'xuéxiào', mean:'school'}],
-        sentences:[
-          {han:'他在学校学习中文。', pin:'Tā zài xuéxiào xuéxí Zhōngwén.', en:'He studies Chinese at school.'},
-          {han:'学习需要坚持。', pin:'Xuéxí xūyào jiānchí.', en:'Learning requires persistence.'}
-        ],
-        mnemonic:'A child under a cover learning little by little ⇒ “learn”.',
-        strokes:[{x:40,y:50,w:120},{x:60,y:78,w:80},{x:70,y:110,w:70},{x:80,y:140,w:60}]
-      },
-      {
-        id: 4, char:'谢', simp:'谢', trad:'謝',
-        reading:'xiè', meaning:['to thank','thanks'],
-        components:'讠speech + 射 shoot', decomp:'讠 + 射 → 谢', level:1, hsk:1,
-        words:[{han:'谢谢', pin:'xièxie', mean:'thanks'}, {han:'道谢', pin:'dàoxiè', mean:'to express thanks'}],
-        sentences:[
-          {han:'谢谢你的帮助。', pin:'Xièxie nǐ de bāngzhù.', en:'Thank you for your help.'},
-          {han:'他向老师道谢。', pin:'Tā xiàng lǎoshī dàoxiè.', en:'He expressed thanks to the teacher.'}
-        ],
-        mnemonic:'Speech (讠) + shoot (射) — shoot words of gratitude ⇒ “thank”.',
-        strokes:[{x:28,y:60,w:60},{x:30,y:90,w:50},{x:110,y:60,w:90},{x:110,y:90,w:90}]
-      },
-      {
-        id: 5, char:'好', simp:'好', trad:'好',
-        reading:'hǎo', meaning:['good','well','fine'],
-        components:'女 woman + 子 child', decomp:'女 + 子 → 好', level:1, hsk:1,
-        words:[{han:'你好', pin:'nǐhǎo', mean:'hello'}, {han:'好吃', pin:'hǎochī', mean:'delicious'}],
-        sentences:[
-          {han:'今天天气很好。', pin:'Jīntiān tiānqì hěn hǎo.', en:'The weather is very good today.'},
-          {han:'祝你周末愉快！', pin:'Zhù nǐ zhōumò yúkuài!', en:'Have a nice weekend!'}
-        ],
-        mnemonic:'Woman + child — a “good” sign of family.',
-        strokes:[{x:40,y:60,w:80},{x:100,y:90,w:90},{x:80,y:120,w:80}]
-      },
-      {
-        id: 6, char:'语', simp:'语', trad:'語',
-        reading:'yǔ', meaning:['language','speech'],
-        components:'讠speech + 吾 I', decomp:'讠 + 吾 → 语', level:1, hsk:1,
-        words:[{han:'语言', pin:'yǔyán', mean:'language'}, {han:'语法', pin:'yǔfǎ', mean:'grammar'}],
-        sentences:[
-          {han:'他的语言能力很强。', pin:'Tā de yǔyán nénglì hěn qiáng.', en:'His language ability is strong.'},
-          {han:'我们在课上学语法。', pin:'Wǒmen zài kè shàng xué yǔfǎ.', en:'We study grammar in class.'}
-        ],
-        mnemonic:'Words (讠) from self (吾) ⇒ language.',
-        strokes:[{x:28,y:60,w:60},{x:110,y:60,w:90},{x:110,y:90,w:90}]
-      }
-    ].map(c => ({
-      ...c,
-      srs: {stage:1, reps:0, wrong:0, due: Date.now()},
-      user: {synonyms:[], note:''}
-    }));
-
-    /* =========================
-       Storage & settings
-    ==========================*/
-    const LS = {
-      get(k, fallback){ try{ const v = JSON.parse(localStorage.getItem(k)); return v ?? fallback }catch{ return fallback } },
-      set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch{} }
-    };
-    const SETTINGS_KEY = 'hanziSRS_settings_v2';
-    const SYN_KEY = 'hanziSRS_synonyms_v2';
-    const NOTE_KEY = 'hanziSRS_notes_v2';
-    const settings = Object.assign({
-      requireTones: true,
-      autoTones: true,
-      autoplayAudio: true,
-      autoContextOnWrong: false
-    }, LS.get(SETTINGS_KEY, {}));
-    const userSynonyms = LS.get(SYN_KEY, {});
-    const userNotes = LS.get(NOTE_KEY, {});
-
-    /* =========================
-       Session state
-    ==========================*/
+    // ========== STATE MANAGEMENT ==========
     const state = {
-      start: Date.now(),
-      queue: [],              // [{id, step:'reading'|'meaning', attempts}]
-      active: null,           // current task
-      item: null,             // current item
-      history: [],            // logs
-      correct: 0, total: 0,
-      readStats: {ok:0,total:0}, meanStats: {ok:0,total:0}
+      currentItem: null,
+      session: {
+        total: 10,
+        completed: 3,
+        correct: 3,
+        startTime: Date.now()
+      },
+      settings: {
+        autoPlayAudio: true,
+        showContextAfterWrong: false,
+        requireTones: true
+      }
     };
 
-    // Build queue: shuffle items, then pair reading→meaning for each (keeps context)
-    function buildQueue(){
-      const due = deck.filter(it => it.srs.due <= Date.now());
-      const items = (due.length ? due : deck).slice();
-      const ids = shuffle(items.map(i=>i.id));
-      const q = [];
-      ids.forEach(id => { q.push({id, step:'reading', attempts:0}); q.push({id, step:'meaning', attempts:0}); });
-      state.queue = q;
-      state.total = q.length;
-    }
-    function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
+    // ========== DEMO DATA ==========
+    const reviewItems = [
+      {
+        id: 1,
+        type: 'kanji',
+        character: '学',
+        reading: 'xué',
+        meaning: 'learn; study',
+        level: 3,
+        srsStage: 'Apprentice 2',
+        examples: [
+          { hanzi: '我在学校学习中文。', pinyin: 'Wǒ zài xuéxiào xuéxí zhōngwén.', translation: 'I study Chinese at school.' },
+          { hanzi: '学习需要耐心。', pinyin: 'Xuéxí xūyào nàixīn.', translation: 'Learning requires patience.' },
+          { hanzi: '他学得很快。', pinyin: 'Tā xué dé hěn kuài.', translation: 'He learns very quickly.' }
+        ],
+        meaningMnemonic: 'Under a roof (冖) the child (子) is learning — imagine a classroom where the roof keeps the noise out so the child can focus. That\'s why 学 means to learn.',
+        readingMnemonic: 'Picture your favorite teacher shouting "SH-UEY!" (xué) as you master something new. The cheer locks the reading in.',
+        strokes: 8
+      },
+      {
+        id: 2,
+        type: 'radical',
+        character: '冖',
+        reading: null,
+        meaning: 'cover',
+        level: 1,
+        srsStage: 'Guru 1',
+        examples: [
+          { hanzi: '这个部首出现在很多汉字中。', pinyin: 'Zhège bùshǒu chūxiàn zài hěnduō hànzì zhōng.', translation: 'This radical appears in many Chinese characters.' }
+        ],
+        meaningMnemonic: 'It looks like a roof covering something.',
+        readingMnemonic: null,
+        strokes: 2
+      },
+      {
+        id: 3,
+        type: 'vocabulary',
+        character: '学习',
+        reading: 'xuéxí',
+        meaning: 'to study; learning',
+        level: 3,
+        srsStage: 'Apprentice 3',
+        examples: [
+          { hanzi: '我喜欢学习新语言。', pinyin: 'Wǒ xǐhuān xuéxí xīn yǔyán.', translation: 'I like learning new languages.' },
+          { hanzi: '他每天学习八小时。', pinyin: 'Tā měitiān xuéxí bā xiǎoshí.', translation: 'He studies eight hours every day.' }
+        ],
+        meaningMnemonic: '学 means learn and 习 means practice, so together they mean the process of learning.',
+        readingMnemonic: 'It uses the same reading as 学 (xué) with an added 习 (xí).',
+        strokes: null
+      }
+    ];
 
-    /* =========================
-       Pinyin helpers
-    ==========================*/
-    const VOWELS=['a','e','i','o','u','ü'];
-    const TONE_MAP={a:['ā','á','ǎ','à'],e:['ē','é','ě','è'],i:['ī','í','ǐ','ì'],o:['ō','ó','ǒ','ò'],u:['ū','ú','ǔ','ù'],'ü':['ǖ','ǘ','ǚ','ǜ']};
-    const DIA_BASE={'ā':'a','á':'a','ǎ':'a','à':'a','ē':'e','é':'e','ě':'e','è':'e','ī':'i','í':'i','ǐ':'i','ì':'i','ō':'o','ó':'o','ǒ':'o','ò':'o','ū':'u','ú':'u','ǔ':'u','ù':'u','ǖ':'ü','ǘ':'ü','ǚ':'ü','ǜ':'ü'};
-    function normalizeSpaces(s){ return s.trim().replace(/\s+/g,' ') }
-    function diacriticsFromNumeric(s){
-      return s.split(/\s+/).map(syl=>{
-        const m=syl.match(/(.*?)([1-5])$/); if(!m) return syl.replace(/u:|v/g,'ü');
-        let base=m[1].replace(/u:|v/g,'ü'), tone=+m[2];
-        if(tone===5) return base;
-        const lower=base.toLowerCase();
-        let idx=-1,v=''; if(lower.includes('a')){idx=lower.indexOf('a');v='a'}
-        else if(lower.includes('e')){idx=lower.indexOf('e');v='e'}
-        else if(lower.includes('ou')){idx=lower.indexOf('o');v='o'}
-        else{ for(let i=base.length-1;i>=0;i--){const ch=lower[i]; if(VOWELS.includes(ch)){idx=i;v=ch;break}}}
-        if(idx>=0){ const rep=TONE_MAP[v][tone-1]; base=base.slice(0,idx)+rep+base.slice(idx+1) }
-        return base;
-      }).join(' ');
-    }
-    function numericFromDiacritics(s){
-      return s.split(/\s+/).map(syl=>{
-        let tone=5, base='';
-        for(const ch of syl){
-          if(DIA_BASE[ch]){ tone={'ā':1,'á':2,'ǎ':3,'à':4,'ē':1,'é':2,'ě':3,'è':4,'ī':1,'í':2,'ǐ':3,'ì':4,'ō':1,'ó':2,'ǒ':3,'ò':4,'ū':1,'ú':2,'ǔ':3,'ù':4,'ǖ':1,'ǘ':2,'ǚ':3,'ǜ':4}[ch]; base+=DIA_BASE[ch]; }
-          else if(ch==='v'){ base+='ü' } else { base+=ch }
-        }
-        base=base.replace(/u:/g,'ü'); return base+(tone===5?'':tone);
-      }).join(' ');
-    }
-    function normalizeReading(s){
-      s=s.toLowerCase().trim().replace(/\s+/g,' ').replace(/u:|v/g,'ü');
-      return s;
-    }
-    function toneColorize(s){
-      return s.split(/\s+/).map(syl=>{
-        let tone=5, base=syl;
-        const m=syl.match(/([1-5])$/);
-        if(m) { tone=+m[1]; base=diacriticsFromNumeric(syl) }
-        else { for(const ch of syl){ if(DIA_BASE[ch]){ tone={'ā':1,'á':2,'ǎ':3,'à':4,'ē':1,'é':2,'ě':3,'è':4,'ī':1,'í':2,'ǐ':3,'ì':4,'ō':1,'ó':2,'ǒ':3,'ò':4,'ū':1,'ú':2,'ǔ':3,'ù':4,'ǖ':1,'ǘ':2,'ǚ':3,'ǜ':4}[ch]; break } } }
-        return `<span class="tone-${tone}">${base}</span>`;
-      }).join(' ');
-    }
-
-    /* =========================
-       Meaning helpers
-    ==========================*/
-    function normalizeMeaning(s){
-      return s.toLowerCase().trim()
-        .replace(/[’'"]/g,'')
-        .replace(/[-_]/g,' ')
-        .replace(/[^\p{Letter}\p{Number}\s]/gu,'')
-        .replace(/\s+/g,' ');
-    }
-    function levenshtein(a,b){
-      a=a||''; b=b||''; const m=a.length,n=b.length; const dp=new Array(n+1).fill(0).map((_,j)=>j);
-      for(let i=1;i<=m;i++){ let prev=dp[0]; dp[0]=i;
-        for(let j=1;j<=n;j++){ const tmp=dp[j]; const cost=a[i-1]===b[j-1]?0:1; dp[j]=Math.min(dp[j]+1, dp[j-1]+1, prev+cost); prev=tmp; }
-      } return dp[n];
-    }
-
-    /* =========================
-       Audio (Web Speech)
-    ==========================*/
-    let voices=[]; function loadVoices(){ voices=speechSynthesis.getVoices().filter(v=>/zh|cmn/i.test(v.lang)) }
-    if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices }
-    function speak(text){ if(!settings.autoplayAudio) return;
-      if('speechSynthesis' in window && voices.length){ const u=new SpeechSynthesisUtterance(text); u.lang=voices[0].lang; u.voice=voices[0]; speechSynthesis.cancel(); speechSynthesis.speak(u)}
-    }
-
-    /* =========================
-       UI refs
-    ==========================*/
-    const els = {
+    // ========== DOM ELEMENTS ==========
+    const elements = {
+      // Progress
       progressFill: document.getElementById('progressFill'),
       progressText: document.getElementById('progressText'),
-      remaining: document.getElementById('remaining'),
       accuracy: document.getElementById('accuracy'),
-      elapsed: document.getElementById('elapsed'),
-      endBtn: document.getElementById('endBtn'),
+      streak: document.getElementById('streak'),
+      time: document.getElementById('time'),
 
-      char: document.getElementById('char'),
-      srsStage: document.getElementById('srsStage'),
-      levelBadge: document.getElementById('levelBadge'),
+      // Review card
+      itemType: document.getElementById('itemType'),
+      character: document.getElementById('character'),
+      characterSubtitle: document.getElementById('characterSubtitle'),
+      question: document.getElementById('question'),
+      questionHint: document.getElementById('questionHint'),
+      answerInput: document.getElementById('answerInput'),
+      submitBtn: document.getElementById('submitBtn'),
 
-      modeBadge: document.getElementById('modeBadge'),
-      subPrompt: document.getElementById('subPrompt'),
+      // Result
+      resultContainer: document.getElementById('resultContainer'),
+      resultTitle: document.getElementById('resultTitle'),
+      resultDetails: document.getElementById('resultDetails'),
+      nextBtn: document.getElementById('nextBtn'),
+      showContextBtn: document.getElementById('showContextBtn'),
+      showMnemonicsBtn: document.getElementById('showMnemonicsBtn'),
 
-      readingRow: document.getElementById('readingRow'),
-      readingBox: document.getElementById('readingBox'),
-      readingInput: document.getElementById('readingInput'),
-      readingSubmit: document.getElementById('readingSubmit'),
-      tonePreview: document.getElementById('tonePreview'),
-
-      meaningRow: document.getElementById('meaningRow'),
-      meaningBox: document.getElementById('meaningBox'),
-      meaningInput: document.getElementById('meaningInput'),
-      meaningSubmit: document.getElementById('meaningSubmit'),
-
-      result: document.getElementById('result'),
-      resTitle: document.getElementById('resTitle'),
-      resDetail: document.getElementById('resDetail'),
-      viewInfoBtn: document.getElementById('viewInfoBtn'),
-      acceptTypoBtn: document.getElementById('acceptTypoBtn'),
-
+      // Controls
       hintBtn: document.getElementById('hintBtn'),
-      ignoreBtn: document.getElementById('ignoreBtn'),
-      undoBtn: document.getElementById('undoBtn'),
       audioBtn: document.getElementById('audioBtn'),
       starBtn: document.getElementById('starBtn'),
-      starIcon: document.getElementById('starIcon'),
 
-      // Context
-      ctxToggle: document.getElementById('ctxToggle'),
-      contextDrawer: document.getElementById('contextDrawer'),
-      contextList: document.getElementById('contextList'),
-      openExamplesTab: document.getElementById('openExamplesTab'),
+      // Context panel
+      contextPanel: document.getElementById('contextPanel'),
+      closeContextBtn: document.getElementById('closeContextBtn'),
+      panelTabs: document.querySelectorAll('.panel-tab'),
+      panelContents: document.querySelectorAll('.panel-content'),
 
-      // Tabs
-      tabs: {info: document.getElementById('tabInfo'), examples: document.getElementById('tabExamples'), mnemonic: document.getElementById('tabMnemonic'), progress: document.getElementById('tabProgress')},
-      panels: {info: document.getElementById('panelInfo'), examples: document.getElementById('panelExamples'), mnemonic: document.getElementById('panelMnemonic'), progress: document.getElementById('panelProgress')},
-
-      // Info panel
-      infoChar: document.getElementById('infoChar'),
-      variantInfo: document.getElementById('variantInfo'),
-      infoReading: document.getElementById('infoReading'),
-      infoMeaning: document.getElementById('infoMeaning'),
-      infoRadicals: document.getElementById('infoRadicals'),
-      infoDecomp: document.getElementById('infoDecomp'),
-      strokeBox: document.getElementById('strokeBox'),
-      strokePlay: document.getElementById('strokePlay'),
-      strokeReset: document.getElementById('strokeReset'),
-
-      wordList: document.getElementById('wordList'),
-      sentList: document.getElementById('sentList'),
-      mnemonicText: document.getElementById('mnemonicText'),
-      mnemonicInput: document.getElementById('mnemonicInput'),
-      mnemonicSaved: document.getElementById('mnemonicSaved'),
-      saveMnemonic: document.getElementById('saveMnemonic'),
-
-      progStage: document.getElementById('progStage'),
-      progNext: document.getElementById('progNext'),
-      progAnswered: document.getElementById('progAnswered'),
-      progAcc: document.getElementById('progAcc'),
-      historyList: document.getElementById('historyList'),
-
-      // Settings / Help
-      openSettings: document.getElementById('openSettings'),
-      settingsSheet: document.getElementById('settingsSheet'),
-      closeSettings: document.getElementById('closeSettings'),
-      setRequireTones: document.getElementById('setRequireTones'),
-      setAutoTones: document.getElementById('setAutoTones'),
-      setAutoplayAudio: document.getElementById('setAutoplayAudio'),
-      setAutoContextOnWrong: document.getElementById('setAutoContextOnWrong'),
-
-      openHelp: document.getElementById('openHelp'),
-      helpModal: document.getElementById('helpModal'),
-
-      // Summary
-      summaryModal: document.getElementById('summaryModal'),
-      confetti: document.getElementById('confetti'),
-      accRing: document.getElementById('accRing'),
-      sumAcc: document.getElementById('sumAcc'),
-      sumCount: document.getElementById('sumCount'),
-      sumReadAcc: document.getElementById('sumReadAcc'),
-      sumMeanAcc: document.getElementById('sumMeanAcc'),
-      sumTime: document.getElementById('sumTime'),
-      missList: document.getElementById('missList'),
-      finishBtn: document.getElementById('finishBtn'),
-      practiceMissBtn: document.getElementById('practiceMissBtn'),
-
-      // Toast
-      toast: document.getElementById('toast'),
-      reqTonesBadge: document.getElementById('reqTonesBadge')
+      // Theme
+      themeBtn: document.getElementById('themeBtn'),
+      themeIcon: document.getElementById('themeIcon')
     };
 
-    /* =========================
-       Tabs logic
-    ==========================*/
-    function activateTab(which){
-      for(const id of Object.keys(els.tabs)){
-        els.tabs[id].setAttribute('aria-selected', String(id===which));
-        els.panels[id].classList.toggle('active', id===which);
+    // ========== INITIALIZATION ==========
+    function init() {
+      loadCurrentItem();
+      setupEventListeners();
+      updateProgress();
+      startTimer();
+
+      // Set current year in footer
+      document.querySelector('footer .muted').textContent = `© ${new Date().getFullYear()} Hanzi SRS · Master Chinese characters through spaced repetition`;
+    }
+
+    function loadCurrentItem() {
+      state.currentItem = reviewItems[0];
+      renderItem();
+    }
+
+    function renderItem() {
+      const item = state.currentItem;
+
+      // Update item type badge
+      elements.itemType.className = `item-badge ${item.type}`;
+      elements.itemType.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          ${getTypeIcon(item.type)}
+        </svg>
+        ${capitalizeFirst(item.type)}
+      `;
+
+      // Update character and question
+      elements.character.textContent = item.character;
+
+      if (item.type === 'radical') {
+        elements.question.textContent = 'What is the meaning of this radical?';
+        elements.characterSubtitle.textContent = 'Type the meaning in English';
+        elements.answerInput.placeholder = 'Type the meaning...';
+      } else {
+        elements.question.textContent = 'What is the reading of this character?';
+        elements.characterSubtitle.textContent = 'Type the pinyin with tone marks';
+        elements.answerInput.placeholder = 'Type pinyin...';
+      }
+
+      // Reset UI state
+      elements.answerInput.value = '';
+      elements.answerInput.className = 'answer-input';
+      elements.resultContainer.style.display = 'none';
+      elements.contextPanel.style.display = 'none';
+
+      // Focus input
+      elements.answerInput.focus();
+    }
+
+    function getTypeIcon(type) {
+      switch(type) {
+        case 'radical':
+          return '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>';
+        case 'kanji':
+          return '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>';
+        case 'vocabulary':
+          return '<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/>';
+        default:
+          return '<circle cx="12" cy="12" r="10"/>';
       }
     }
-    Object.entries(els.tabs).forEach(([id,btn])=>btn.addEventListener('click',()=>activateTab(id)));
-    els.openExamplesTab.addEventListener('click', ()=>activateTab('examples'));
 
-    /* =========================
-       Strokes (simple anim)
-    ==========================*/
-    let strokeTimer=null;
-    function drawStrokes(item){
-      els.strokeBox.innerHTML='';
-      (item.strokes||[]).forEach((s,idx)=>{
-        const bar=document.createElement('div'); bar.className='stroke hidden';
-        bar.style.left=s.x+'px'; bar.style.top=s.y+'px'; bar.style.width=s.w+'px'; bar.style.transform=`rotate(${s.rot||0}deg)`; els.strokeBox.appendChild(bar);
-        const num=document.createElement('div'); num.className='stroke-num'; num.style.left=(s.x-14)+'px'; num.style.top=(s.y-8)+'px'; num.textContent=idx+1; els.strokeBox.appendChild(num);
+    function capitalizeFirst(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // ========== PROGRESS & TIMER ==========
+    function updateProgress() {
+      const progress = (state.session.completed / state.session.total) * 100;
+      elements.progressFill.style.width = `${progress}%`;
+      elements.progressText.textContent = `${state.session.completed}/${state.session.total}`;
+
+      const accuracy = state.session.correct / state.session.completed * 100;
+      elements.accuracy.textContent = `${isNaN(accuracy) ? 0 : Math.round(accuracy)}%`;
+    }
+
+    function startTimer() {
+      setInterval(() => {
+        const elapsed = Math.floor((Date.now() - state.session.startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        elements.time.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    // ========== ANSWER CHECKING ==========
+    function checkAnswer() {
+      const userAnswer = elements.answerInput.value.trim();
+      const item = state.currentItem;
+      let isCorrect = false;
+
+      if (item.type === 'radical') {
+        // Check meaning for radicals
+        isCorrect = userAnswer.toLowerCase() === item.meaning.toLowerCase();
+      } else {
+        // Check reading for kanji and vocabulary
+        // Simple check - in a real app, you'd use proper pinyin validation
+        isCorrect = userAnswer.toLowerCase() === item.reading.toLowerCase();
+      }
+
+      showResult(isCorrect);
+
+      // Update session stats
+      state.session.completed++;
+      if (isCorrect) state.session.correct++;
+      updateProgress();
+    }
+
+    function showResult(isCorrect) {
+      const item = state.currentItem;
+
+      // Update result display
+      elements.resultTitle.textContent = isCorrect ? 'Correct!' : 'Incorrect';
+      elements.resultTitle.className = `result-title ${isCorrect ? 'correct' : 'incorrect'}`;
+
+      if (isCorrect) {
+        elements.resultDetails.innerHTML = `The ${item.type === 'radical' ? 'meaning' : 'reading'} is <strong>${item.type === 'radical' ? item.meaning : item.reading}</strong>. Well done!`;
+        elements.answerInput.className = 'answer-input correct';
+      } else {
+        elements.resultDetails.innerHTML = `The correct ${item.type === 'radical' ? 'meaning' : 'reading'} is <strong>${item.type === 'radical' ? item.meaning : item.reading}</strong>. Try again next time!`;
+        elements.answerInput.className = 'answer-input incorrect';
+      }
+
+      // Show result container
+      elements.resultContainer.className = `result-container show ${isCorrect ? 'correct' : 'incorrect'}`;
+      elements.resultContainer.style.display = 'block';
+
+      // Pulse animation for correct answers
+      if (isCorrect) {
+        elements.character.classList.add('pulse');
+        setTimeout(() => elements.character.classList.remove('pulse'), 500);
+      } else {
+        elements.answerInput.classList.add('shake');
+        setTimeout(() => elements.answerInput.classList.remove('shake'), 300);
+      }
+    }
+
+    function nextItem() {
+      // In a real app, you'd get the next item from the queue
+      // For this demo, we'll just reload the same item
+      loadCurrentItem();
+    }
+
+    // ========== CONTEXT PANEL ==========
+    function showContextPanel() {
+      elements.contextPanel.style.display = 'block';
+      activateTab('examples');
+    }
+
+    function hideContextPanel() {
+      elements.contextPanel.style.display = 'none';
+    }
+
+    function activateTab(tabName) {
+      // Update tabs
+      elements.panelTabs.forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.tab === tabName);
       });
-    }
-    function animateStrokes(){ clearInterval(strokeTimer); const bars=[...els.strokeBox.querySelectorAll('.stroke')]; bars.forEach(b=>b.classList.add('hidden')); let i=0;
-      strokeTimer=setInterval(()=>{ if(i>=bars.length){clearInterval(strokeTimer);return} bars[i].classList.remove('hidden'); i++ }, 400);
-    }
-    function resetStrokes(){ clearInterval(strokeTimer); [...els.strokeBox.querySelectorAll('.stroke')].forEach(b=>b.classList.add('hidden')) }
-    els.strokePlay.addEventListener('click', animateStrokes);
-    els.strokeReset.addEventListener('click', resetStrokes);
 
-    /* =========================
-       Render & header
-    ==========================*/
-    function nextTask(){
-      if(!state.queue.length){ endSession(); return }
-      state.active = state.queue[0]; // peek, do NOT shift until correct
-      state.item = deck.find(d=>d.id===state.active.id);
-      renderCard();
-      if(settings.autoplayAudio && state.active.step==='reading'){ speak(state.item.char) }
-    }
-
-    function renderCard(){
-      // reset UI
-      hideResult();
-      els.readingBox.classList.remove('good','bad');
-      els.meaningBox.classList.remove('good','bad');
-
-      const it=state.item, step=state.active.step;
-      els.char.textContent=it.char;
-      els.srsStage.textContent=stageName(it.srs.stage);
-      els.levelBadge.textContent=`Level ${it.level} · HSK ${it.hsk}`;
-      els.modeBadge.textContent= step==='reading' ? 'Reading' : 'Meaning';
-      els.subPrompt.innerHTML = step==='reading'
-        ? 'Type the pinyin with tone marks or numbers. Press <span class="kbd">Enter</span> to submit.'
-        : 'Type the primary meaning. Press <span class="kbd">Enter</span> to submit.';
-      els.reqTonesBadge.textContent = settings.requireTones ? 'On' : 'Off';
-
-      els.readingRow.style.display = step==='reading' ? '' : 'none';
-      els.meaningRow.style.display  = step==='meaning' ? '' : 'none';
-
-      // Prefill info panel
-      updateInfoPanel(it);
-      // Context (off by default; not auto-open unless setting + wrong)
-      buildContext(it);
-      els.ctxToggle.checked = false;
-      toggleContext(false);
-
-      // Focus appropriate input
-      (step==='reading' ? els.readingInput : els.meaningInput).focus();
-      // Tone preview
-      els.tonePreview.innerHTML = settings.requireTones ? toneColorize(numericFromDiacritics(it.reading)) : '';
-      updateHeader();
-      drawStrokes(it);
-      setTimeout(animateStrokes, 200);
-    }
-
-    function updateHeader(){
-      const done = state.history.length;
-      els.progressText.textContent = `${done} / ${state.total}`;
-      const fill = state.total ? Math.min(1, done/state.total) : 0;
-      els.progressFill.style.transform = `scaleX(${fill})`;
-      els.remaining.textContent = String(Math.max(0, state.total - done));
-      els.accuracy.textContent = state.history.length ? Math.round((state.correct/state.history.length)*100) + '%' : '—';
-    }
-
-    function updateInfoPanel(it){
-      els.infoChar.textContent = it.char;
-      els.variantInfo.textContent = it.simp===it.trad ? 'both' : 'simplified';
-      els.infoReading.textContent = it.reading;
-      els.infoMeaning.textContent = it.meaning.join('; ');
-      els.infoRadicals.textContent = it.components;
-      els.infoDecomp.textContent = it.decomp;
-      // words
-      els.wordList.innerHTML='';
-      for(const w of it.words||[]){
-        const div=document.createElement('div'); div.className='list-item';
-        div.innerHTML=`<span><strong>${w.han}</strong> · <em>${w.pin}</em></span><span class="muted">${w.mean}</span>`;
-        els.wordList.appendChild(div);
-      }
-      // sentences
-      els.sentList.innerHTML='';
-      for(const s of it.sentences||[]){
-        const div=document.createElement('div'); div.className='list-item';
-        // bold the target char in sentence
-        const highlighted = s.han.replace(new RegExp(it.char,'g'), `<strong>${it.char}</strong>`);
-        div.innerHTML=`<span>${highlighted}<div class="muted" style="margin-top:4px">${s.pin}</div></span><span class="muted">${s.en}</span>`;
-        els.sentList.appendChild(div);
-      }
-      // mnemonic
-      els.mnemonicText.textContent = it.mnemonic || '';
-      els.mnemonicInput.value = userNotes[it.char] || '';
-      // progress tab
-      const answered = state.history.filter(h=>h.id===it.id).length;
-      const ok = state.history.filter(h=>h.id===it.id && h.ok).length;
-      els.progStage.textContent = stageName(it.srs.stage);
-      els.progNext.textContent = dueIn(it.srs.due);
-      els.progAnswered.textContent = String(answered);
-      els.progAcc.textContent = answered ? Math.round(ok/answered*100)+'%' : '—';
-      rebuildHistory();
-    }
-    function rebuildHistory(){
-      els.historyList.innerHTML='';
-      state.history.slice(-12).reverse().forEach(h=>{
-        const div=document.createElement('div'); div.className='list-item';
-        div.innerHTML = `<span>${h.char} · ${h.step}</span><span class="${h.ok?'success':'danger'}">${h.ok?'✓':'✕'}</span>`;
-        els.historyList.appendChild(div);
+      // Update content
+      elements.panelContents.forEach(content => {
+        content.classList.toggle('active', content.id === `${tabName}Tab`);
       });
     }
 
-    function stageName(n){
-      if(n<=4) return `Apprentice ${n}`;
-      if(n<=6) return `Guru ${n-4}`;
-      if(n===7) return 'Master';
-      if(n===8) return 'Enlightened';
-      return 'Burned';
-    }
-    function dueIn(ts){
-      const d=ts-Date.now(); if(d<=0) return 'now';
-      const s=Math.round(d/1000); if(s<60) return s+'s';
-      const m=Math.round(s/60); if(m<60) return m+'m';
-      const h=Math.round(m/60); if(h<48) return h+'h'; const days=Math.round(h/24); return days+'d';
-    }
+    // ========== AUDIO ==========
+    function playAudio() {
+      const item = state.currentItem;
+      const text = item.type === 'radical' ? item.meaning : item.reading;
 
-    /* =========================
-       Context drawer
-    ==========================*/
-    function buildContext(it){
-      els.contextList.innerHTML='';
-      for(const s of it.sentences||[]){
-        const card=document.createElement('div'); card.className='ctx-card';
-        const highlighted=s.han.replace(new RegExp(it.char,'g'), `<strong>${it.char}</strong>`);
-        card.innerHTML = `<div>${highlighted}</div><div class="ctx-pin">${s.pin}</div><div class="muted">${s.en}</div>`;
-        els.contextList.appendChild(card);
-      }
-    }
-    function toggleContext(open){
-      els.contextDrawer.classList.toggle('open', !!open);
-    }
-    els.ctxToggle.addEventListener('change', e=>toggleContext(e.target.checked));
-
-    /* =========================
-       SRS (toy)
-    ==========================*/
-    const INTERVALS = { // hours
-      1:4, 2:8, 3:24, 4:48, 5:7*24, 6:14*24, 7:30*24, 8:120*24, 9:Infinity
-    };
-    function promote(it){
-      it.srs.stage = Math.min(9, it.srs.stage+1);
-      it.srs.reps++;
-      const h = INTERVALS[it.srs.stage] || 24;
-      it.srs.due = Date.now() + h*60*60*1000;
-    }
-    function demote(it){
-      it.srs.stage = Math.max(1, it.srs.stage-1);
-      it.srs.wrong++;
-      it.srs.due = Date.now() + 30*60*1000;
-    }
-
-    /* =========================
-       Checking + flow
-    ==========================*/
-    function showResult(ok, detail, options={}){
-      els.result.className='result show '+(ok?'ok':'bad');
-      els.resTitle.textContent = ok ? 'Correct ✓' : 'Incorrect';
-      els.resDetail.innerHTML = detail || '';
-      els.acceptTypoBtn.style.display = options.typo ? '' : 'none';
-    }
-    function hideResult(){ els.result.className='result'; els.resTitle.textContent=''; els.resDetail.textContent=''; els.acceptTypoBtn.style.display='none' }
-
-    function checkReading(input, item){
-      input = normalizeSpaces(input);
-      const empty = !input;
-      let user = /\d/.test(input) ? input : numericFromDiacritics(input);
-      let target = numericFromDiacritics(item.reading);
-      user = normalizeReading(user); target = normalizeReading(target);
-      if(!settings.requireTones){ user=user.replace(/[1-5]/g,''); target=target.replace(/[1-5]/g,'') }
-      const ok = !empty && user === target;
-      let typo=false;
-      if(!ok && !empty){
-        const d = levenshtein(user.replace(/\s+/g,''), target.replace(/\s+/g,''));
-        typo = d===1 || (target.length>=6 && d<=2);
-      }
-      return {ok, empty, user, target, expected:item.reading, typo};
-    }
-    function checkMeaning(input, item){
-      input = normalizeMeaning(input); const empty = !input;
-      const canon = item.meaning.map(normalizeMeaning);
-      const userSyn = (userSynonyms[item.char]||[]).map(normalizeMeaning);
-      const all = new Set([...canon, ...userSyn]);
-      const ok = !empty && all.has(input);
-      let typo=false, nearest='';
-      if(!ok && !empty){
-        let best=1e9,bestT='';
-        for(const t of all){ const d=levenshtein(input, t); if(d<best){best=d; bestT=t} }
-        typo = best===1 || (bestT.length>=6 && best<=2); nearest=bestT;
-      }
-      return {ok, empty, expected: item.meaning[0], typo, nearest};
-    }
-
-    function submitReading(){
-      const val = normalizeSpaces(els.readingInput.value);
-      const res = checkReading(val, state.item);
-      state.readStats.total++;
-      if(res.ok){
-        state.readStats.ok++;
-        els.readingBox.classList.add('good');
-        state.history.push({id:state.item.id, char:state.item.char, step:'reading', ok:true, input:val, expected:res.expected});
-        state.correct++;
-        showResult(true, `Reading: <strong>${state.item.reading}</strong>`);
-        // advance to meaning of same item (the queue already pairs; we now SHIFT this task)
-        state.queue.shift(); // remove reading
-        nextTask(); // will render meaning (pair is now at queue[0])
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-CN';
+        speechSynthesis.speak(utterance);
       } else {
-        els.readingBox.classList.add('bad');
-        const det = res.empty ? 'Please enter an answer.' :
-          res.typo ? 'Almost — looks like a typo. You can <em>accept as typo</em>.' :
-          'Try again. You can use 1–5 for tone numbers.';
-        showResult(false, det, {typo: res.typo});
-        // demote only on first wrong attempt
-        if(state.active.attempts===0 && !res.empty){ demote(state.item) }
-        state.active.attempts++;
-        state.history.push({id:state.item.id, char:state.item.char, step:'reading', ok:false, input:val, expected:res.expected});
-        // DO NOT advance
+        alert('Text-to-speech is not supported in your browser');
       }
-      updateHeader();
     }
 
-    function submitMeaning(){
-      const val = normalizeSpaces(els.meaningInput.value);
-      const res = checkMeaning(val, state.item);
-      state.meanStats.total++;
-      if(res.ok){
-        state.meanStats.ok++;
-        els.meaningBox.classList.add('good');
-        state.history.push({id:state.item.id, char:state.item.char, step:'meaning', ok:true, input:val, expected:res.expected});
-        state.correct++;
-        showResult(true, `Meaning: <strong>${state.item.meaning[0]}</strong>`);
-        // Promote on full success of meaning step; shift the meaning task and move on
-        promote(state.item);
-        state.queue.shift(); // remove meaning
-        // move to next pair
-        nextTask();
-      } else {
-        els.meaningBox.classList.add('bad');
-        const det = res.empty ? 'Please enter an answer.' :
-          res.typo ? `Almost “${res.nearest}”. You can <em>accept as typo</em> or try again.` :
-          'Not quite. Try again or add a synonym if yours is valid.';
-        showResult(false, det, {typo: res.typo});
-        if(settings.autoContextOnWrong){ els.ctxToggle.checked = true; toggleContext(true) }
-        if(state.active.attempts===0 && !res.empty){ demote(state.item) }
-        state.active.attempts++;
-        state.history.push({id:state.item.id, char:state.item.char, step:'meaning', ok:false, input:val, expected:res.expected});
+    // ========== THEME TOGGLE ==========
+    function initTheme() {
+      const THEME_KEY = 'hanziSRS_theme';
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      function applyTheme(next) {
+        localStorage.setItem(THEME_KEY, next);
+        document.documentElement.setAttribute('data-theme', next === 'auto' ? (prefersDark ? 'dark' : 'light') : next);
+        updateThemeIcon();
       }
-      updateHeader();
+
+      function updateThemeIcon() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        elements.themeIcon.innerHTML = isDark
+          ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="2" fill="none"/>'
+          : '<path d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95 6.95-1.41-1.41M7.46 7.46 6.05 6.05m12.9 0-1.41 1.41M7.46 16.54l-1.41 1.41" stroke="currentColor" stroke-width="2" fill="none"/>';
+      }
+
+      // Initialize theme
+      applyTheme(localStorage.getItem(THEME_KEY) || 'auto');
+
+      // Toggle theme on button click
+      elements.themeBtn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+      });
     }
 
-    function handleSubmit(){
-      if(!state.active) return;
-      if(state.active.step==='reading'){ submitReading() } else { submitMeaning() }
-    }
+    // ========== EVENT LISTENERS ==========
+    function setupEventListeners() {
+      // Submit answer
+      elements.submitBtn.addEventListener('click', checkAnswer);
+      elements.answerInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkAnswer();
+      });
 
-    /* =========================
-       Controls & events
-    ==========================*/
-    // Enter submits
-    function onEnter(e){ if(e.key==='Enter'){ e.preventDefault(); handleSubmit() } }
-    els.readingInput.addEventListener('keydown', onEnter);
-    els.meaningInput.addEventListener('keydown', onEnter);
-    els.readingSubmit.addEventListener('click', submitReading);
-    els.meaningSubmit.addEventListener('click', submitMeaning);
+      // Next item
+      elements.nextBtn.addEventListener('click', nextItem);
 
-    // Typo accept
-    els.acceptTypoBtn.addEventListener('click', ()=>{
-      if(!state.active) return;
-      // Treat as correct but do NOT promote/demote; just advance
-      state.history.push({id:state.item.id, char:state.item.char, step:state.active.step, ok:true, input:'(typo accepted)'});
-      state.correct++;
-      if(state.active.step==='reading'){ state.queue.shift(); nextTask() }
-      else { state.queue.shift(); nextTask() }
-      updateHeader();
-    });
+      // Context panel
+      elements.showContextBtn.addEventListener('click', showContextPanel);
+      elements.showMnemonicsBtn.addEventListener('click', () => {
+        showContextPanel();
+        activateTab('mnemonics');
+      });
+      elements.closeContextBtn.addEventListener('click', hideContextPanel);
 
-    // View info button focuses right panel and Info tab
-    els.viewInfoBtn.addEventListener('click', ()=>activateTab('info'));
+      // Tab switching
+      elements.panelTabs.forEach(tab => {
+        tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+      });
 
-    // Hint
-    els.hintBtn.addEventListener('click', ()=>{
-      if(!state.active) return;
-      const it=state.item;
-      if(state.active.step==='reading'){
-        const num=numericFromDiacritics(it.reading);
-        const first=num.split(/\s+/)[0].slice(0,2);
-        showResult(false, `Hint: starts with “${diacriticsFromNumeric(first)}…”`);
-      } else {
-        const ans=it.meaning[0]; showResult(false, `Hint: “${ans.slice(0,1)}…${ans.slice(-1)}” (${ans.length} letters)`);
-      }
-    });
+      // Controls
+      elements.hintBtn.addEventListener('click', () => {
+        const item = state.currentItem;
+        alert(`Hint: ${item.type === 'radical' ? 'Think about what this shape represents' : 'The reading starts with "${item.reading.charAt(0)}"'}`);
+      });
 
-    // Ignore once (skip current step, no promotion/demotion)
-    els.ignoreBtn.addEventListener('click', ()=>{
-      if(!state.active) return;
-      state.history.push({id:state.item.id, char:state.item.char, step:state.active.step, ok:true, input:'(ignored)'});
-      state.correct++; toast('Ignored once ✓');
-      state.queue.shift(); nextTask(); updateHeader();
-    });
+      elements.audioBtn.addEventListener('click', playAudio);
 
-    // Undo = remove last history entry and reinsert its task at front
-    els.undoBtn.addEventListener('click', ()=>{
-      const last=state.history.pop(); if(!last){ toast('Nothing to undo'); return }
-      state.correct = Math.max(0, state.correct - (last.ok?1:0));
-      // Put the undone task back to front
-      state.queue.unshift({id:last.id, step:last.step, attempts:0});
-      toast('Undid last action'); nextTask(); updateHeader();
-    });
+      elements.starBtn.addEventListener('click', () => {
+        const isStarred = elements.starBtn.getAttribute('data-starred') === 'true';
+        elements.starBtn.setAttribute('data-starred', !isStarred);
 
-    // Audio
-    els.audioBtn.addEventListener('click', ()=>speak(state.item.char));
-
-    // Star
-    els.starBtn.addEventListener('click', ()=>{
-      const pressed = els.starBtn.getAttribute('aria-pressed')==='true';
-      els.starBtn.setAttribute('aria-pressed', String(!pressed));
-      els.starIcon.style.fill = pressed ? 'none' : 'currentColor';
-      toast(!pressed ? 'Starred' : 'Unstarred');
-    });
-
-    // Reading typing: auto tones & live preview
-    els.readingInput.addEventListener('input', ()=>{
-      const prev=els.readingInput.value;
-      if(settings.autoTones){
-        const m=prev.match(/(.+?)([a-zü:V]+)([1-5])$/i);
-        if(m){ const before=m[1]; const syl=m[2].replace(/V|v|u:/g,'ü'); const tone=m[3]; const replaced=diacriticsFromNumeric(syl+tone); els.readingInput.value=before+replaced+' ' }
-      }
-      const numeric=/\d/.test(prev)?prev:numericFromDiacritics(prev);
-      els.tonePreview.innerHTML=toneColorize(numeric);
-    });
-
-    // Settings
-    function openSettings(){ els.settingsSheet.classList.add('open'); els.settingsSheet.setAttribute('aria-hidden','false') }
-    function closeSettings(){ els.settingsSheet.classList.remove('open'); els.settingsSheet.setAttribute('aria-hidden','true') }
-    els.openSettings.addEventListener('click', openSettings);
-    els.closeSettings.addEventListener('click', closeSettings);
-    // init toggles
-    els.setRequireTones.checked=!!settings.requireTones;
-    els.setAutoTones.checked=!!settings.autoTones;
-    els.setAutoplayAudio.checked=!!settings.autoplayAudio;
-    els.setAutoContextOnWrong.checked=!!settings.autoContextOnWrong;
-    els.setRequireTones.addEventListener('change', e=>{ settings.requireTones=e.target.checked; LS.set(SETTINGS_KEY, settings); els.reqTonesBadge.textContent = settings.requireTones?'On':'Off' });
-    els.setAutoTones.addEventListener('change', e=>{ settings.autoTones=e.target.checked; LS.set(SETTINGS_KEY, settings) });
-    els.setAutoplayAudio.addEventListener('change', e=>{ settings.autoplayAudio=e.target.checked; LS.set(SETTINGS_KEY, settings) });
-    els.setAutoContextOnWrong.addEventListener('change', e=>{ settings.autoContextOnWrong=e.target.checked; LS.set(SETTINGS_KEY, settings) });
-
-    // Help
-    els.openHelp.addEventListener('click', ()=>els.helpModal.showModal());
-
-    // Global keys
-    document.addEventListener('keydown', (e)=>{
-      if(e.key==='?' && !e.ctrlKey && !e.metaKey){ e.preventDefault(); els.helpModal.showModal() }
-      if(e.key==='e' || e.key==='E'){ e.preventDefault(); endSession() }
-      if(e.key==='a' || e.key==='A'){ e.preventDefault(); els.audioBtn.click() }
-      if(e.key==='h' || e.key==='H'){ e.preventDefault(); els.hintBtn.click() }
-      if(e.key==='i' || e.key==='I'){ e.preventDefault(); els.ignoreBtn.click() }
-      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='z'){ e.preventDefault(); els.undoBtn.click() }
-      if(e.key==='s' || e.key==='S'){ e.preventDefault(); openSettings() }
-    });
-
-    // Save mnemonic
-    els.saveMnemonic.addEventListener('click', ()=>{
-      const note=els.mnemonicInput.value.trim(); userNotes[state.item.char]=note; LS.set(NOTE_KEY, userNotes);
-      els.mnemonicSaved.textContent='Saved ✓'; setTimeout(()=>els.mnemonicSaved.textContent='',1000);
-    });
-
-    /* =========================
-       Summary
-    ==========================*/
-    function endSession(){
-      // compute stats
-      const total=state.history.length;
-      const acc = total ? Math.round((state.history.filter(h=>h.ok).length/total)*100) : 0;
-      const rAcc = state.readStats.total ? Math.round(state.readStats.ok/state.readStats.total*100) : 0;
-      const mAcc = state.meanStats.total ? Math.round(state.meanStats.ok/state.meanStats.total*100) : 0;
-      els.sumCount.textContent=String(total);
-      els.sumAcc.textContent=acc+'%';
-      els.accRing.style.setProperty('--pct', acc);
-      els.sumReadAcc.textContent = state.readStats.total ? rAcc+'%' : '—';
-      els.sumMeanAcc.textContent = state.meanStats.total ? mAcc+'%' : '—';
-      const dt=Math.round((Date.now()-state.start)/1000); els.sumTime.textContent=`${Math.floor(dt/60)}m ${dt%60}s`;
-      els.missList.innerHTML='';
-      const misses=state.history.filter(h=>!h.ok).slice(-30);
-      if(!misses.length){ els.missList.innerHTML='<div class="muted">No mistakes — great work!</div>' }
-      else{
-        for(const m of misses){
-          const it=deck.find(d=>d.id===m.id);
-          const div=document.createElement('div'); div.className='list-item';
-          div.innerHTML=`<span>${it.char} · ${m.step}</span><span class="muted">You: ${m.input||'—'} · Ans: ${m.expected||'—'}</span>`;
-          els.missList.appendChild(div);
+        if (!isStarred) {
+          elements.starBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+              <path d="m12 3 3.09 6.26L22 10.27l-5 4.9 1.18 6.86L12 18.9 5.82 22 7 15.17l-5-4.9 6.91-1.01L12 3Z"/>
+            </svg>
+          `;
+        } else {
+          elements.starBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m12 3 3.09 6.26L22 10.27l-5 4.9 1.18 6.86L12 18.9 5.82 22 7 15.17l-5-4.9 6.91-1.01L12 3Z"/>
+            </svg>
+          `;
         }
-      }
-      els.summaryModal.showModal();
-      // confetti if good
-      if(acc>=80){ burstConfetti() }
+      });
+
+      // Stroke animation
+      document.getElementById('animateStrokesBtn')?.addEventListener('click', () => {
+        alert('Stroke animation would play here in the full implementation');
+      });
+
+      // Practice writing
+      document.getElementById('practiceWritingBtn')?.addEventListener('click', () => {
+        alert('Writing practice interface would open here in the full implementation');
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        // Don't trigger if user is typing in input
+        if (e.target === elements.answerInput) return;
+
+        switch(e.key) {
+          case 'Enter':
+            if (elements.resultContainer.style.display === 'block') {
+              nextItem();
+            } else {
+              checkAnswer();
+            }
+            break;
+          case 'h':
+          case 'H':
+            elements.hintBtn.click();
+            break;
+          case 'a':
+          case 'A':
+            elements.audioBtn.click();
+            break;
+        }
+      });
     }
-    function burstConfetti(){
-      els.confetti.innerHTML='';
-      for(let i=0;i<40;i++){
-        const s=document.createElement('span'); s.className='f';
-        s.style.left=Math.random()*100+'%';
-        s.style.background = `linear-gradient(135deg, var(--accent), var(--accent-2))`;
-        s.style.animationDelay = (Math.random()*0.6)+'s';
-        s.style.opacity = 0.7 + Math.random()*0.3;
-        els.confetti.appendChild(s);
-      }
-      setTimeout(()=>els.confetti.innerHTML='', 2000);
-    }
-    els.finishBtn.addEventListener('click', ()=>els.summaryModal.close());
-    els.practiceMissBtn.addEventListener('click', ()=>{
-      // Rebuild queue with missed ones
-      const missedIds = [...new Set(state.history.filter(h=>!h.ok).map(h=>h.id))];
-      if(!missedIds.length){ toast('No mistakes to practice'); return }
-      state.queue = []; missedIds.forEach(id=>{ state.queue.push({id, step:'reading', attempts:0}); state.queue.push({id, step:'meaning', attempts:0}); });
-      state.total = state.queue.length; state.history=[]; state.correct=0; state.readStats={ok:0,total:0}; state.meanStats={ok:0,total:0};
-      els.summaryModal.close(); nextTask(); updateHeader(); toast('Practicing mistakes');
+
+    // ========== INITIALIZE APP ==========
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      init();
     });
-
-    /* =========================
-       Utility
-    ==========================*/
-    function toast(msg){ els.toast.textContent=msg; els.toast.style.display='block'; clearTimeout(els.toast._t); els.toast._t=setTimeout(()=>els.toast.style.display='none', 1200) }
-
-    // Live elapsed time
-    setInterval(()=>{
-      const s=Math.floor((Date.now()-state.start)/1000);
-      const m=Math.floor(s/60), r=s%60; els.elapsed.textContent = `${m}:${String(r).padStart(2,'0')}`;
-    }, 1000);
-
-    // Initialize
-    deck.forEach(it=>{ if(userSynonyms[it.char]) it.user.synonyms=userSynonyms[it.char]; if(userNotes[it.char]) it.user.note=userNotes[it.char] });
-    buildQueue(); nextTask();
-
-    /* =========================
-       Tone colors (CSS helper)
-    ==========================*/
-    // Inject tone colors once (kept minimal, no extra CSS blocks earlier)
-    const style=document.createElement('style'); style.textContent=`
-      .tone-1{color:hsl(210 80% 70%)} .tone-2{color:hsl(120 62% 58%)} .tone-3{color:hsl(60 70% 56%)} .tone-4{color:hsl(0 70% 65%)} .tone-5{color:var(--muted)}
-    `; document.head.appendChild(style);
   </script>
 </body>
 </html>

@@ -363,6 +363,16 @@
   </style>
 </head>
 <body>
+  <!-- Redirect unauthenticated users to the login page -->
+  <script>
+    try {
+      if (!localStorage.getItem('loggedIn')) {
+        window.location.replace('login.html');
+      }
+    } catch (e) {
+      window.location.replace('login.html');
+    }
+  </script>
   <div class="bg-wrap" aria-hidden="true"><div class="bg-grid"></div></div>
 
   <!-- Premium Navigation -->
